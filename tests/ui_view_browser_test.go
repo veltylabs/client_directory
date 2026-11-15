@@ -11,7 +11,7 @@ import (
 
 func TestUI_Screens(t *testing.T) {
 	caller := view.NewRecords().Caller(&mockCaller{})
-	screens := ui.Screens(caller)
+	screens := ui.Screens(caller, testCountries)
 	if len(screens) != 1 {
 		t.Fatalf("expected 1 screen, got %d", len(screens))
 	}

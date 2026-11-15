@@ -8,8 +8,8 @@ import (
 )
 
 const (
-	titlePatients             = "Patients"
-	searchPlaceholderPatients lang.Text = "Search a patient by RUT, name or phone"
+	titlePatients                       = "Patients"
+	searchPlaceholderPatients lang.Text = "Search by document, name or phone"
 )
 
 // NewView construye el Presenter de pacientes —el motor agnóstico de renderizado

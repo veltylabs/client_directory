@@ -13,10 +13,13 @@ const (
 	DocumentUnverified = "unverified" // typed but invalid; the front desk must fix it
 )
 
+// rutName is the national id name, the same in every language: data, not UI text.
+const rutName = "RUT"
+
 // DocumentType: closed options for patient.document_type. Example: in := kinds.DocumentType()
 func DocumentType() input.Input {
 	return input.Radio(
-		fmt.KeyValue{Key: DocumentRUT, Value: "RUT"},
+		fmt.KeyValue{Key: DocumentRUT, Value: rutName},
 		fmt.KeyValue{Key: DocumentPassport, Value: "Passport"},
 		fmt.KeyValue{Key: DocumentForeignID, Value: "Foreign id card"},
 		fmt.KeyValue{Key: DocumentNone, Value: "No document"},

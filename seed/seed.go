@@ -2,6 +2,7 @@ package seed
 
 import (
 	patientdirectory "github.com/veltylabs/patient_directory"
+	"github.com/veltylabs/patient_directory/kinds"
 )
 
 // Data contiene las filas de demostración creadas por Load.
@@ -44,6 +45,47 @@ func Load(m *patientdirectory.Module, tenantID string) (Data, error) {
 			Email:     "pedro.soto@example.cl",
 			Address:   "San Carlos",
 			IsActive:  true,
+		},
+		// Pacientes de otras nacionalidades: un pasaporte, una cédula extranjera y
+		// otro pasaporte. Se buscan por su documento, no por RUT.
+		{
+			Id:              "demo-patient-4",
+			TenantId:        tenantID,
+			DocumentType:    kinds.DocumentPassport,
+			DocumentCountry: "VE",
+			Rut:             "AB1234567",
+			Name:            "Lucía Mendoza",
+			Birthdate:       "1988-07-30",
+			Phone:           "+584141234567",
+			Email:           "lucia.mendoza@example.com",
+			Address:         "Chillan",
+			IsActive:        true,
+		},
+		{
+			Id:              "demo-patient-5",
+			TenantId:        tenantID,
+			DocumentType:    kinds.DocumentForeignID,
+			DocumentCountry: "PE",
+			Rut:             "CE-004567",
+			Name:            "Carlos Ramírez",
+			Birthdate:       "1979-09-14",
+			Phone:           "+51987654321",
+			Email:           "carlos.ramirez@example.com",
+			Address:         "San Carlos",
+			IsActive:        true,
+		},
+		{
+			Id:              "demo-patient-6",
+			TenantId:        tenantID,
+			DocumentType:    kinds.DocumentPassport,
+			DocumentCountry: "HT",
+			Rut:             "HT2024567",
+			Name:            "Jean Pierre Louis",
+			Birthdate:       "1995-01-08",
+			Phone:           "+50937123456",
+			Email:           "jean.louis@example.com",
+			Address:         "Chillan",
+			IsActive:        true,
 		},
 	}
 

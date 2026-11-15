@@ -19,7 +19,7 @@ func TestScreenSave(t *testing.T) {
 	}
 
 	caller := view.NewRecords().Caller(crud.LoopbackActingAs(nil, "user1", m))
-	screens := ui.Screens(caller)
+	screens := ui.Screens(caller, testCountries)
 	if len(screens) == 0 {
 		t.Fatal("expected screens")
 	}

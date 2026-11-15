@@ -13,7 +13,7 @@
 | [TestUpdate_OnlyListedFields](../tests/crud_test.go) | Actualización enviando únicamente `["phone"]`: el campo `name` y el resto de los campos permanecen intactos. |
 | [TestUpdate_DocumentRecheckedOnlyWhenTouched](../tests/crud_test.go) | Actualización de `["phone"]` en un paciente cuyo RUT almacenado no pasaría validaciones nuevas: la operación tiene éxito al no modificarse el documento. |
 | [TestUpdate_DocumentTypeOnlyKeepsStoredRut](../tests/crud_test.go) | Paciente con pasaporte; se actualiza `["document_type"]` a RUT con el número almacenado válido: tiene éxito manteniendo el RUT previo. |
-| [TestSearch_ByRutPhoneName](../tests/crud_test.go) | Tres pacientes registrados; búsqueda por RUT, por dígitos de teléfono y por fragmento de nombre retornan exactamente una coincidencia cada una. |
+| [TestSearch_ByRutPhoneName](../tests/crud_test.go) | Cuatro pacientes registrados; búsqueda por RUT, por dígitos de teléfono, por fragmento de nombre y por número de pasaporte (sin distinguir mayúsculas) retorna exactamente una coincidencia cada una; una búsqueda sin texto no muestra ningún paciente. |
 | [TestDelete_DoesNotExist](../tests/crud_test.go) | Invocación de la operación eliminada `patient_d` falla con operación desconocida al no permitirse `model.Delete`. |
 | [TestImport_Idempotent](../tests/crud_test.go) | `ImportPatient` ejecutado dos veces con el mismo ID mantiene una sola fila con los campos de la segunda llamada. |
 | [TestDemo_Valid](../tests/demo_test.go) | `seed.Demo()` se ejecuta sin error en WASM, su validación es limpia y expone al menos una pantalla. |
@@ -48,4 +48,8 @@
 | [TestGetPatientMissing](../tests/readers_test.go) | Lector `GetPatient` retorna `found=false` si no existe. |
 | [TestScreenSave](../tests/screen_save_test.go) | Guardado desde pantalla en el navegador persiste correctamente vía bus. |
 | [TestSeed_Load](../tests/seed_test.go) | Semillado carga pacientes de demostración sin error. |
+| [TestSeed_ForeignPatientsFoundByDocument](../tests/seed_test.go) | Los pacientes extranjeros del semillado (pasaporte VE, cédula extranjera PE, pasaporte HT) se encuentran por su documento, no por nombre. |
 | [TestUI_Screens](../tests/ui_view_browser_test.go) | Componente UI genera pantallas válidas con el llamador conectado. |
+| [TestNew_RequiresDefaultCountry](../tests/country_phone_test.go) | `New` sin `Deps.Countries` (país por defecto) falla nombrando el campo: el módulo no trae ningún país propio. |
+| [TestCreate_ForeignDocumentNeedsIssuingCountry](../tests/country_phone_test.go) | Pasaporte o cédula extranjera sin país emisor, o con un código que no es país, es rechazado con error en `document_country`; con país válido se acepta. |
+| [TestPhone_InternationalThroughCrudDefaultCountryThroughImport](../tests/country_phone_test.go) | Por `crud` un teléfono sin prefijo es rechazado en `phone` y uno internacional se acepta; `ImportPatient` normaliza uno nacional con el país por defecto (`+56911111111`). |

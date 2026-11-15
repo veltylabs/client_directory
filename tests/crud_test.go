@@ -325,6 +325,7 @@ func TestSearch_ByRutPhoneName(t *testing.T) {
 		{Id: "p1", DocumentType: kinds.DocumentRUT, Rut: "11111111-1", Name: "Ana Morales", Phone: "+56911112222"},
 		{Id: "p2", DocumentType: kinds.DocumentRUT, Rut: "12345678-5", Name: "Bernardo Soto", Phone: "+56933334444"},
 		{Id: "p3", DocumentType: kinds.DocumentRUT, Rut: "15678432-K", Name: "Carlos Vega", Phone: "+56955556666"},
+		{Id: "p4", DocumentType: kinds.DocumentPassport, DocumentCountry: "VE", Rut: "AB1234567", Name: "Lucía Mendoza", Phone: "+584141234567"},
 	}
 	for i := range patients {
 		var s patientdirectory.Patient
@@ -370,6 +371,30 @@ func TestSearch_ByRutPhoneName(t *testing.T) {
 	}
 	if len(list3) != 1 || list3[0].Id != "p1" {
 		t.Fatalf("expected p1, got %v", list3)
+	}
+
+	// 4. A passport is found by its number, whatever the document type
+	var list4 patientdirectory.PatientList
+	var err4 error
+	caller.Call(opOf(model.Read),
+		&crud.ReadArgs{Search: "ab1234567"}, &list4, func(e error) { err4 = e })
+	if err4 != nil {
+		t.Fatalf("search passport: %v", err4)
+	}
+	if len(list4) != 1 || list4[0].Id != "p4" {
+		t.Fatalf("expected p4, got %v", list4)
+	}
+
+	// 5. Without text no patient is shown: the register starts empty
+	var list5 patientdirectory.PatientList
+	var err5 error
+	caller.Call(opOf(model.Read),
+		&crud.ReadArgs{Search: ""}, &list5, func(e error) { err5 = e })
+	if err5 != nil {
+		t.Fatalf("search empty: %v", err5)
+	}
+	if len(list5) != 0 {
+		t.Fatalf("an empty search must show nobody, got %d patients", len(list5))
 	}
 }
 
@@ -475,10 +500,10 @@ func (m noAnswerModule) MountOperations(reg crud.Registry) {
 		Store:   m.store,
 		Rules:   patientdirectory.PatientModel.Rules,
 		Create: func(a crud.CurrentUser, tx crud.Tx, rec model.Model) (crud.RuleAnswer, error) {
-			return 0, nil
+			return crud.RuleAnswer{}, nil
 		},
 		Update: func(a crud.CurrentUser, tx crud.Tx, old, next model.Model, fields []string) (crud.RuleAnswer, error) {
-			return crud.ApplyAndPublish, nil
+			return crud.ApplyAndPublish(), nil
 		},
 		Search: func(a crud.CurrentUser, filter model.Model, text string) ([]storage.Condition, error) {
 			return nil, nil

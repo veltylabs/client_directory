@@ -11,12 +11,15 @@ import (
 // crud ya validó el esquema, los campos solo del servidor, los límites y el permiso antes de llamarte.
 func (p *Patient) Create(a crud.CurrentUser, tx crud.Tx, m *Module) (crud.RuleAnswer, error) {
 	if err := m.checkDocument(p); err != nil {
-		return 0, err
+		return crud.RuleAnswer{}, err
+	}
+	if err := m.checkPhone(p); err != nil {
+		return crud.RuleAnswer{}, err
 	}
 	if err := m.sameDocument(tx, p); err != nil {
-		return 0, err
+		return crud.RuleAnswer{}, err
 	}
-	return crud.ApplyAndPublish, nil
+	return crud.ApplyAndPublish(), nil
 }
 
 // sameDocument rechaza otro paciente de esta clínica con el mismo documento (el tenant lo pone el Store).

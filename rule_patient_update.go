@@ -6,8 +6,13 @@ import "webtyp.com/crud"
 // Vuelve a validar el documento solo si cambió alguno de sus campos.
 // crud ya validó el esquema, los campos solo del servidor, los límites y el permiso antes de llamarte.
 func (next *Patient) Update(a crud.CurrentUser, tx crud.Tx, old *Patient, fields []string, m *Module) (crud.RuleAnswer, error) {
+	if touches(fields, Patient_.Phone) {
+		if err := m.checkPhone(next); err != nil {
+			return crud.RuleAnswer{}, err
+		}
+	}
 	if !touches(fields, Patient_.Rut, Patient_.DocumentType, Patient_.DocumentCountry) {
-		return crud.ApplyAndPublish, nil
+		return crud.ApplyAndPublish(), nil
 	}
 	// next trae solo los campos enviados: se mezcla con lo guardado campo por campo.
 	merged := *old
@@ -21,14 +26,14 @@ func (next *Patient) Update(a crud.CurrentUser, tx crud.Tx, old *Patient, fields
 		merged.DocumentCountry = next.DocumentCountry
 	}
 	if err := m.checkDocument(&merged); err != nil {
-		return 0, err
+		return crud.RuleAnswer{}, err
 	}
 	// Solo se escriben las columnas de fields: se devuelve la forma normalizada de las enviadas.
 	next.Rut, next.DocumentType, next.DocumentCountry = merged.Rut, merged.DocumentType, merged.DocumentCountry
 	if err := m.sameDocument(tx, &merged); err != nil {
-		return 0, err
+		return crud.RuleAnswer{}, err
 	}
-	return crud.ApplyAndPublish, nil
+	return crud.ApplyAndPublish(), nil
 }
 
 func touches(fields []string, names ...string) bool {

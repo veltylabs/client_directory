@@ -19,7 +19,7 @@ Montadas por `MountOperations`, que `definitionc` genera en [`definition_gen.go`
 
 | Operación (`router.Operation`) | Cable REST | Permiso | Descripción |
 |---|---|---|---|
-| `patient_directory.patient.read` | `GET /api/patient_directory/patient` | Read | Consulta y búsqueda paginada por RUT, teléfono o nombre ([`rule_patient_search.go`](rule_patient_search.go)) |
+| `patient_directory.patient.read` | `GET /api/patient_directory/patient` | Read | Consulta y búsqueda paginada por documento (RUT, pasaporte o cédula extranjera), teléfono o nombre; sin texto no muestra pacientes ([`rule_patient_search.go`](rule_patient_search.go)) |
 | `patient_directory.patient.create` | `POST /api/patient_directory/patient` | Create | Registro de paciente con validación de documento y unicidad ([`rule_patient_create.go`](rule_patient_create.go)) |
 | `patient_directory.patient.update` | `PATCH /api/patient_directory/patient` | Update | Modificación de campos permitidos o desactivación (`is_active = false`) ([`rule_patient_update.go`](rule_patient_update.go)) |
 

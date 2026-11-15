@@ -36,6 +36,9 @@ func (m *Module) ImportPatient(p Patient) (Patient, error) {
 	if err := m.checkDocument(&p); err != nil {
 		return Patient{}, err
 	}
+	if err := m.checkPhone(&p); err != nil {
+		return Patient{}, err
+	}
 	if err := model.ValidateFields(model.ActionCreate, &p); err != nil {
 		return Patient{}, err
 	}

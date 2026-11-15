@@ -6,6 +6,7 @@ import (
 	patientdirectory "github.com/veltylabs/patient_directory"
 	"github.com/veltylabs/patient_directory/migrate"
 	"github.com/veltylabs/patient_directory/ui"
+	"webtyp.com/country"
 	"webtyp.com/crud"
 	"webtyp.com/ddl"
 	"webtyp.com/input"
@@ -14,6 +15,9 @@ import (
 	"webtyp.com/unixid"
 	"webtyp.com/view"
 )
+
+// demoCountries es lo que una app decide: Chile por defecto y los países de los pacientes de la demo primero.
+var demoCountries = country.Catalog{Default: "CL", First: []string{"VE", "PE", "HT", "AR"}}
 
 // Demo crea una demostración ejecutable del módulo patient_directory sobre mem db con datos semilla.
 func Demo() (view.Demo, error) {
@@ -27,6 +31,7 @@ func Demo() (view.Demo, error) {
 		TenantID:    tenantID,
 		IDs:         ids,
 		ValidateRUT: input.NormalizeRUT,
+		Countries:   demoCountries,
 	})
 	if err != nil {
 		return view.Demo{}, err
@@ -35,15 +40,16 @@ func Demo() (view.Demo, error) {
 		return view.Demo{}, err
 	}
 	return view.Demo{
-		Label:    ui.Label,
-		Timezone: "America/Santiago",
-		ActingAs: "u1",
-		Modules:  []crud.Module{mod},
+		Label:     ui.Label,
+		Timezone:  "America/Santiago",
+		Countries: demoCountries,
+		ActingAs:  "u1",
+		Modules:   []crud.Module{mod},
 		Migrations: []ddl.Step{
 			{Name: patientdirectory.ModelName, Run: migrate.Migrate},
 		},
 		Screens: func(d view.BrowserDeps) []view.Screen {
-			return ui.Screens(d.Caller)
+			return ui.Screens(d.Caller, d.Countries)
 		},
 	}, nil
 }

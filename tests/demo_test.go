@@ -24,7 +24,7 @@ func TestDemo_Valid(t *testing.T) {
 		t.Fatalf("time.LoadZone(%q) error: %v", demo.Timezone, err)
 	}
 	caller := view.NewRecords().Caller(crud.LoopbackActingAs(nil, demo.ActingAs, demo.Modules...))
-	screens := demo.Screens(view.BrowserDeps{Caller: caller, Zone: zone})
+	screens := demo.Screens(view.BrowserDeps{Caller: caller, Zone: zone, Countries: testCountries})
 	if len(screens) == 0 {
 		t.Fatalf("expected at least one screen, got 0")
 	}

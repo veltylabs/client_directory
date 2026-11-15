@@ -16,6 +16,7 @@ import (
 // forma en que se escribe el mismo RUT encuentra al mismo paciente, y crearlo otra vez es rechazado.
 func TestFindPatient_AnyWayTheRutIsWritten(t *testing.T) {
 	m, err := patientdirectory.New(orm.New(mem.New()), patientdirectory.Deps{
+		Countries:   testCountries,
 		Publisher:   &mock.Broker{},
 		TenantID:    "t1",
 		IDs:         &testIDGen{},

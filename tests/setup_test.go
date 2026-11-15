@@ -3,6 +3,7 @@ package tests
 import (
 	"errors"
 	"strings"
+	"webtyp.com/country"
 
 	"webtyp.com/events"
 	"webtyp.com/orm"
@@ -45,6 +46,7 @@ func setupModuleWithTenant(tenantID string) (*patientdirectory.Module, *fakePubl
 func setupModuleWithTenantAndDB(tenantID string, db *orm.DB) (*patientdirectory.Module, *fakePublisher, error) {
 	pub := &fakePublisher{}
 	deps := patientdirectory.Deps{
+		Countries:   testCountries,
 		Publisher:   pub,
 		ValidateRUT: fakeValidateRUT,
 		TenantID:    tenantID,
@@ -56,3 +58,6 @@ func setupModuleWithTenantAndDB(tenantID string, db *orm.DB) (*patientdirectory.
 	}
 	return m, pub, nil
 }
+
+// testCountries is what an app decides for the tests: Chile by default.
+var testCountries = country.Catalog{Default: "CL", First: []string{"VE", "PE", "HT"}}

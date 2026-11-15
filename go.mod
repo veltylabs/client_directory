@@ -2,18 +2,22 @@ module github.com/veltylabs/patient_directory
 
 go 1.26.8
 
+replace webtyp.com/crud => ../../../webtyp/crud
+
 require (
 	webtyp.com/appkit v0.2.33
-	webtyp.com/crud v0.0.11
+	webtyp.com/components v0.8.51
+	webtyp.com/country v0.0.1
+	webtyp.com/crud v0.0.15
 	webtyp.com/ddl v0.0.49
 	webtyp.com/events v0.1.8
-	webtyp.com/fmt v1.0.0
-	webtyp.com/input v0.0.36
+	webtyp.com/fmt v1.0.2
+	webtyp.com/input v0.2.0
 	webtyp.com/lang v0.1.16
-	webtyp.com/model v0.2.19
+	webtyp.com/model v0.2.22
 	webtyp.com/orm v0.12.31
-	webtyp.com/router v0.4.21
-	webtyp.com/storage v0.2.1
+	webtyp.com/router v0.5.0
+	webtyp.com/storage v0.2.3
 	webtyp.com/svg v0.3.33
 	webtyp.com/time v0.6.4
 	webtyp.com/unixid v0.3.1
@@ -37,7 +41,9 @@ require (
 	webtyp.com/await v0.1.2 // indirect
 	webtyp.com/base64 v0.0.6 // indirect
 	webtyp.com/calendar v0.1.0 // indirect
+	webtyp.com/color v0.1.2 // indirect
 	webtyp.com/context v0.0.23 // indirect
+	webtyp.com/css v0.4.30 // indirect
 	webtyp.com/dbus v0.1.1 // indirect
 	webtyp.com/definitioncheck v0.0.3 // indirect
 	webtyp.com/dom v0.13.29 // indirect
@@ -45,14 +51,40 @@ require (
 	webtyp.com/escape v0.1.0 // indirect
 	webtyp.com/fetch v0.1.30 // indirect
 	webtyp.com/filepath v0.1.0 // indirect
+	webtyp.com/filetype v0.1.1 // indirect
+	webtyp.com/font v0.0.5 // indirect
+	webtyp.com/html v0.0.30 // indirect
 	webtyp.com/json v0.5.40 // indirect
 	webtyp.com/keyring v0.2.9 // indirect
-	webtyp.com/mcp v0.3.25 // indirect
+	webtyp.com/mcp v0.3.28 // indirect
 	webtyp.com/msgtype v0.1.0 // indirect
 	webtyp.com/pwa v0.2.13 // indirect
 	webtyp.com/rbac v0.0.37 // indirect
 	webtyp.com/rpc v0.2.21 // indirect
-	webtyp.com/server v0.2.120 // indirect
+	webtyp.com/server v0.2.122 // indirect
 	webtyp.com/user v0.3.14 // indirect
 	webtyp.com/webauthn v0.1.16 // indirect
+	webtyp.com/widget v0.6.46 // indirect
 )
+
+// TEMP local verification (ILike for document search) — remove before commit.
+replace webtyp.com/storage => ../../../webtyp/storage
+
+// STATUS (remove these lines when HELP_HINTS_MASTER_PLAN closes): local copies under test.
+replace webtyp.com/layout => ../../../webtyp/layout
+
+replace webtyp.com/form => ../../../webtyp/form
+
+replace webtyp.com/components => ../../../webtyp/components
+
+replace webtyp.com/icons => ../../../webtyp/icons
+
+replace webtyp.com/widget => ../../../webtyp/widget
+
+replace webtyp.com/model => ../../../webtyp/model
+
+replace webtyp.com/input => ../../../webtyp/input
+
+replace webtyp.com/country => ../../../webtyp/country
+
+replace webtyp.com/view => ../../../webtyp/view

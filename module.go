@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"github.com/veltylabs/patient_directory/kinds"
+	"webtyp.com/country"
 	"webtyp.com/events"
 	"webtyp.com/fmt"
 	"webtyp.com/model"
@@ -15,6 +16,9 @@ type Deps struct {
 	TenantID    string
 	IDs         model.IDGenerator // required: ids for patients created without one
 	ValidateRUT func(string) (string, error)
+	// Countries is the installation's default country and which countries come first (App.Countries):
+	// required. The module holds no country code or prefix of its own.
+	Countries country.Catalog
 }
 
 type Module struct {
@@ -23,6 +27,7 @@ type Module struct {
 	pub         events.Publisher
 	validateRUT func(string) (string, error)
 	tenantID    string
+	countries   country.Catalog
 }
 
 func depErr(name string) error {
@@ -34,6 +39,12 @@ func depErr(name string) error {
 func New(db *orm.DB, deps Deps) (*Module, error) {
 	if deps.ValidateRUT == nil {
 		return nil, depErr("ValidateRUT")
+	}
+	if deps.Countries.Default == "" {
+		return nil, depErr("Countries.Default")
+	}
+	if err := deps.Countries.Validate(); err != nil {
+		return nil, err
 	}
 	if deps.TenantID == "" {
 		return nil, depErr("TenantID")
@@ -47,6 +58,7 @@ func New(db *orm.DB, deps Deps) (*Module, error) {
 		pub:         deps.Publisher,
 		validateRUT: deps.ValidateRUT,
 		tenantID:    deps.TenantID,
+		countries:   deps.Countries,
 	}, nil
 }
 
@@ -70,6 +82,9 @@ func (m *Module) checkDocument(p *Patient) error {
 			return &model.FieldError{Field: "rut", Err: ErrDocumentNumber}
 		}
 		p.Rut = strings.ToUpper(p.Rut)
+		if _, known := country.Find(p.DocumentCountry); !known {
+			return &model.FieldError{Field: "document_country", Err: ErrDocumentCountry}
+		}
 	case kinds.DocumentNone:
 		p.Rut, p.DocumentCountry = "", ""
 	case kinds.DocumentUnverified:
@@ -92,6 +107,21 @@ func isPhone(s string) bool {
 	return digits >= 6
 }
 
+// isDocument reconoce un número de documento escrito sin espacios que lleva al
+// menos un dígito: un pasaporte o una cédula extranjera (ej. "AB1234567").
+func isDocument(s string) bool {
+	digits := 0
+	for _, r := range s {
+		if r == ' ' {
+			return false
+		}
+		if r >= '0' && r <= '9' {
+			digits++
+		}
+	}
+	return digits > 0
+}
+
 func digitsOnly(s string) string {
 	var b strings.Builder
 	for _, r := range s {
@@ -100,4 +130,19 @@ func digitsOnly(s string) string {
 		}
 	}
 	return b.String()
+}
+
+// checkPhone writes the phone in international form (+56911111111). A number
+// typed without a prefix takes the installation's default country; the form
+// always sends one, so this covers imports and other callers.
+func (m *Module) checkPhone(p *Patient) error {
+	if p.Phone == "" {
+		return nil
+	}
+	norm, err := country.Normalize(p.Phone, m.countries.Default)
+	if err != nil {
+		return &model.FieldError{Field: "phone", Err: err}
+	}
+	p.Phone = norm
+	return nil
 }
