@@ -6,13 +6,13 @@ replace webtyp.com/crud => ../../../webtyp/crud
 
 require (
 	webtyp.com/appkit v0.2.33
-	webtyp.com/components v0.8.73
+	webtyp.com/components v0.8.74
 	webtyp.com/country v0.0.2
 	webtyp.com/crud v0.0.15
 	webtyp.com/ddl v0.0.49
 	webtyp.com/events v0.1.8
 	webtyp.com/fmt v1.0.2
-	webtyp.com/input v0.2.2
+	webtyp.com/input v0.2.3
 	webtyp.com/lang v0.1.16
 	webtyp.com/model v0.2.22
 	webtyp.com/orm v0.12.31
@@ -21,7 +21,7 @@ require (
 	webtyp.com/svg v0.3.33
 	webtyp.com/time v0.6.4
 	webtyp.com/unixid v0.3.1
-	webtyp.com/view v0.6.82
+	webtyp.com/view v0.6.83
 )
 
 require (
