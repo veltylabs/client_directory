@@ -13,8 +13,8 @@ import (
 type Patient struct {
 	Id string
 	TenantId string
-	DocumentType string
 	Rut string
+	DocumentType string
 	DocumentCountry string
 	Name string
 	Birthdate string
@@ -32,15 +32,15 @@ func (m *Patient) ModelName() string { return "patient" }
 
 func (m *Patient) Schema() []model.Field { return PatientModel.Fields }
 
-func (m *Patient) Pointers() []any { return []any{&m.Id, &m.TenantId, &m.DocumentType, &m.Rut, &m.DocumentCountry, &m.Name, &m.Birthdate, &m.BirthdateEstimated, &m.Sex, &m.Phone, &m.Email, &m.Address, &m.Notes, &m.IsActive, (*int64)(&m.UpdatedAt)} }
+func (m *Patient) Pointers() []any { return []any{&m.Id, &m.TenantId, &m.Rut, &m.DocumentType, &m.DocumentCountry, &m.Name, &m.Birthdate, &m.BirthdateEstimated, &m.Sex, &m.Phone, &m.Email, &m.Address, &m.Notes, &m.IsActive, (*int64)(&m.UpdatedAt)} }
 
 func (m *Patient) IsNil() bool { return m == nil }
 
 func (m *Patient) EncodeFields(w model.FieldWriter) {
 	if m.Id != "" { w.String("id", m.Id) }
 	w.String("tenant_id", m.TenantId)
-	w.String("document_type", m.DocumentType)
 	if m.Rut != "" { w.String("rut", m.Rut) }
+	w.String("document_type", m.DocumentType)
 	if m.DocumentCountry != "" { w.String("document_country", m.DocumentCountry) }
 	w.String("name", m.Name)
 	if m.Birthdate != "" { w.String("birthdate", m.Birthdate) }
@@ -57,8 +57,8 @@ func (m *Patient) EncodeFields(w model.FieldWriter) {
 func (m *Patient) DecodeFields(r model.FieldReader) {
 	if v, ok := r.String("id"); ok { m.Id = v }
 	if v, ok := r.String("tenant_id"); ok { m.TenantId = v }
-	if v, ok := r.String("document_type"); ok { m.DocumentType = v }
 	if v, ok := r.String("rut"); ok { m.Rut = v }
+	if v, ok := r.String("document_type"); ok { m.DocumentType = v }
 	if v, ok := r.String("document_country"); ok { m.DocumentCountry = v }
 	if v, ok := r.String("name"); ok { m.Name = v }
 	if v, ok := r.String("birthdate"); ok { m.Birthdate = v }
@@ -89,14 +89,14 @@ func (*Patient) Allow() model.Action     { return PatientModel.Allow }
 func (*PatientList) Allow() model.Action { return PatientModel.Allow }
 
 func (m *Patient) Item() model.Item {
-	return model.Item{ID: m.Id, Label: m.Name, Description: model.JoinItem(m.DocumentType, m.Rut)}
+	return model.Item{ID: m.Id, Label: m.Name, Description: model.JoinItem(m.Rut, m.DocumentType)}
 }
 
 var Patient_ = struct {
 	Id string
 	TenantId string
-	DocumentType string
 	Rut string
+	DocumentType string
 	DocumentCountry string
 	Name string
 	Birthdate string
@@ -111,8 +111,8 @@ var Patient_ = struct {
 }{
 	Id: "id",
 	TenantId: "tenant_id",
-	DocumentType: "document_type",
 	Rut: "rut",
+	DocumentType: "document_type",
 	DocumentCountry: "document_country",
 	Name: "name",
 	Birthdate: "birthdate",

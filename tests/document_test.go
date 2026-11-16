@@ -5,7 +5,10 @@ import (
 
 	patientdirectory "github.com/veltylabs/patient_directory"
 	"github.com/veltylabs/patient_directory/kinds"
+	"github.com/veltylabs/patient_directory/ui"
+	"webtyp.com/crud"
 	"webtyp.com/model"
+	"webtyp.com/view"
 )
 
 func TestCreatePatientDefaultsToRUT(t *testing.T) {
@@ -213,5 +216,24 @@ func TestInactivePatientSaves(t *testing.T) {
 	}
 	if p.IsActive {
 		t.Errorf("expected false, got true")
+	}
+}
+
+// A passport number typed while the RUT type is still marked fails the RUT check,
+// and it lands on the number field so the form paints it there.
+func TestPassportNumberWithRUTTypeFailsOnNumber(t *testing.T) {
+	m, _, err := setupModule()
+	if err != nil {
+		t.Fatalf("setup: %v", err)
+	}
+	caller := view.NewRecords().Caller(crud.LoopbackActingAs(nil, "user1", m))
+	saver := ui.Screens(caller, testCountries)[0].Presenter.(view.Saver)
+
+	var saveErr error
+	saver.Save([]model.Model{&patientdirectory.Patient{
+		Id: "p-pass-1", DocumentType: kinds.DocumentRUT, Rut: "bad", Name: "Foreign Visitor",
+	}}, func(err error) { saveErr = err })
+	if saveErr == nil || model.FieldOf(saveErr) != "rut" {
+		t.Fatalf("want an error on the number field, got %v", saveErr)
 	}
 }

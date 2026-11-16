@@ -2,22 +2,20 @@ module github.com/veltylabs/patient_directory
 
 go 1.26.8
 
-replace webtyp.com/crud => ../../../webtyp/crud
-
 require (
 	webtyp.com/appkit v0.2.33
-	webtyp.com/components v0.8.74
+	webtyp.com/components v0.8.75
 	webtyp.com/country v0.0.2
-	webtyp.com/crud v0.0.15
+	webtyp.com/crud v0.0.16
 	webtyp.com/ddl v0.0.49
 	webtyp.com/events v0.1.8
 	webtyp.com/fmt v1.0.2
-	webtyp.com/input v0.2.3
+	webtyp.com/input v0.2.4
 	webtyp.com/lang v0.1.16
-	webtyp.com/model v0.2.22
+	webtyp.com/model v0.2.23
 	webtyp.com/orm v0.12.31
 	webtyp.com/router v0.5.0
-	webtyp.com/storage v0.2.3
+	webtyp.com/storage v0.2.7
 	webtyp.com/svg v0.3.33
 	webtyp.com/time v0.6.4
 	webtyp.com/unixid v0.3.1
@@ -64,8 +62,5 @@ require (
 	webtyp.com/server v0.2.122 // indirect
 	webtyp.com/user v0.3.14 // indirect
 	webtyp.com/webauthn v0.1.16 // indirect
-	webtyp.com/widget v0.6.48 // indirect
+	webtyp.com/widget v0.6.49 // indirect
 )
-
-// TEMP local verification (ILike for document search) — remove before commit.
-replace webtyp.com/storage => ../../../webtyp/storage

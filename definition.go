@@ -24,11 +24,11 @@ var PatientModel = model.Definition{
 	Fields: model.Fields{
 		{Name: "id", Type: model.Text(), DB: &model.FieldDB{PK: true}, OmitEmpty: true},
 		{Name: "tenant_id", Type: model.Text(), NotNull: true, ServerOnly: true},
-		{Name: "document_type", Type: kinds.DocumentType(), Label: "Document type", NotNull: true, Item: model.ItemDescription},
 		{Name: "rut", Type: input.Text(), Label: "Document number", Help: "Document number, as written on the document.", OmitEmpty: true, Permitted: model.Permitted{Letters: true, Numbers: true, Extra: []rune{'-', '.'}, Maximum: 30}, Item: model.ItemDescription},
+		{Name: "document_type", Type: kinds.DocumentType(), Label: "Document type", NotNull: true, Item: model.ItemDescription},
 		{Name: "document_country", Type: input.Select(), Label: "Issuing country", Help: "The country that issued the passport or id card.", OmitEmpty: true, Permitted: model.Permitted{Letters: true, Minimum: 2, Maximum: 2},
 			ShownWhen: model.When{Field: "document_type", In: []string{kinds.DocumentPassport, kinds.DocumentForeignID}}},
-		{Name: "name", Type: input.Text(), Label: "Name", NotNull: true, Permitted: model.Permitted{Minimum: 1, Maximum: 255}, Item: model.ItemLabel},
+		{Name: "name", Type: input.Text(), Label: "Full name", Help: "Given names followed by family names.", NotNull: true, Permitted: model.Permitted{Minimum: 1, Maximum: 255}, Item: model.ItemLabel},
 		{Name: "birthdate", Type: agedate.New(), Label: "Birthdate", OmitEmpty: true, AlsoSetsField: "birthdate_estimated"},
 		{Name: "birthdate_estimated", Type: input.Checkbox(), Label: "Estimated birth date", Help: "Marked by itself when the date comes from the age the patient said, not from a document."},
 		{Name: "sex", Type: input.Gender(), Label: "Sex", OmitEmpty: true},

@@ -10,6 +10,8 @@
     "Document type": ["Tipo de documento", "Tipo de documento", "Type de document", "Dokumentart", "证件类型", "दस्तावेज़ का प्रकार", "نوع الوثيقة", "Тип документа"],
     "Estimated birth date": ["Fecha de nacimiento aproximada", "Data de nascimento aproximada", "Date de naissance estimée", "Geschätztes Geburtsdatum", "估计出生日期", "अनुमानित जन्म तिथि", "تاريخ الميلاد التقريبي", "Примерная дата рождения"],
     "Foreign id card": ["Cédula extranjera", "Cédula estrangeira", "Carte d'identité étrangère", "Ausländischer Personalausweis", "外国身份证", "विदेशी पहचान पत्र", "بطاقة هوية أجنبية", "Иностранное удостоверение личности"],
+    "Full name": ["Nombre completo", "Nome completo", "Nom complet", "Vollständiger Name", "全名", "पूरा नाम", "الاسم الكامل", "Полное имя"],
+    "Given names followed by family names.": ["Nombres seguidos de apellidos.", "Nomes seguidos de sobrenomes.", "Prénoms suivis des noms de famille.", "Vornamen, gefolgt von Nachnamen.", "名字后接姓氏。", "पहले नाम, फिर उपनाम।", "الأسماء الأولى يليها اللقب.", "Имена, затем фамилии."],
     "Issuing country": ["País emisor", "País emissor", "Pays émetteur", "Ausstellungsland", "签发国家", "जारी करने वाला देश", "بلد الإصدار", "Страна выдачи"],
     "Marked by itself when the date comes from the age the patient said, not from a document.": ["Se marca sola cuando la fecha sale de la edad que dijo el paciente y no de un documento.", "", "", "", "", "", "", ""],
     "No document": ["Sin documento", "Sem documento", "Sans document", "Kein Dokument", "无证件", "कोई दस्तावेज़ नहीं", "بدون وثيقة", "Без документа"],

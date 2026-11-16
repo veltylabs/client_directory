@@ -20,6 +20,7 @@
 | [TestMigrate](../migrate/migrate_test.go) | Aplica migraciones DDL de esquemas de paciente sobre base de datos relacional. |
 | [TestCreatePatientDefaultsToRUT](../tests/document_test.go) | La creación de paciente sin especificar tipo de documento asume `DocumentRUT` por defecto. |
 | [TestInactivePatientSaves](../tests/document_test.go) | Un paciente inactivo (`is_active: false`) se almacena correctamente. |
+| [TestPassportNumberWithRUTTypeFailsOnNumber](../tests/document_test.go) | Un pasaporte guardado con el tipo RUT marcado falla la validación de RUT y el error cae en el campo número (`rut`), que es donde el formulario lo pinta. |
 | [TestNoDocument](../tests/document_test.go) | Paciente con tipo de documento `none` se registra sin requerir número de documento. |
 | [TestPassportNeedsNumber](../tests/document_test.go) | Paciente con pasaporte requiere número de documento no vacío. |
 | [TestPassportStoredAsTyped](../tests/document_test.go) | El número de pasaporte se preserva en mayúsculas sin guiones. |
