@@ -6,7 +6,6 @@ import (
 	"webtyp.com/model"
 	"webtyp.com/orm"
 	"webtyp.com/crud"
-	"webtyp.com/storage"
 	"webtyp.com/time"
 )
 
@@ -88,6 +87,8 @@ func (m *Patient) Validate(action byte) error {
 func (*Patient) Allow() model.Action     { return PatientModel.Allow }
 func (*PatientList) Allow() model.Action { return PatientModel.Allow }
 
+func (*Patient) ListsOnlyAfterSearch() bool { return PatientModel.ListsOnlyAfterSearch }
+
 func (m *Patient) Item() model.Item {
 	return model.Item{ID: m.Id, Label: m.Name, Description: model.JoinItem(m.Rut, m.DocumentType)}
 }
@@ -164,9 +165,6 @@ func (m *Module) MountOperations(reg crud.Registry) {
 		},
 		Update: func(a crud.CurrentUser, tx crud.Tx, old, next model.Model, fields []string) (crud.RuleAnswer, error) {
 			return next.(*Patient).Update(a, tx, old.(*Patient), fields, m)
-		},
-		Search: func(a crud.CurrentUser, filter model.Model, text string) ([]storage.Condition, error) {
-			return (&Patient{}).Search(a, filter.(*Patient), text, m)
 		},
 	})
 }

@@ -9,7 +9,6 @@ import (
 	"webtyp.com/model"
 	"webtyp.com/orm"
 	"webtyp.com/router"
-	"webtyp.com/storage"
 	"webtyp.com/storage/mem"
 
 	patientdirectory "github.com/veltylabs/patient_directory"
@@ -398,6 +397,33 @@ func TestSearch_ByRutPhoneName(t *testing.T) {
 	}
 }
 
+// Sin tildes ni mayúsculas, y un documento escrito sin puntos ni guion, encuentra al paciente (RECORD_SEARCH D2).
+func TestSearch_FoldsAccentsAndDocumentPunctuation(t *testing.T) {
+	mod, _, err := setupModule()
+	if err != nil {
+		t.Fatal(err)
+	}
+	caller := crud.LoopbackActingAs(nil, "u1", mod)
+	p := patientdirectory.Patient{Id: "p1", DocumentType: kinds.DocumentRUT, Rut: "13047980-0", Name: "Lucía Pérez", Phone: "+56912345678"}
+	var saved patientdirectory.Patient
+	caller.Call(opOf(model.Create), &crud.CreateArgs{Records: []model.Model{&p}}, &saved, func(e error) {
+		if e != nil {
+			t.Fatal(e)
+		}
+	})
+	for _, typed := range []string{"lucia", "LUCÍA PEREZ", "13047980", "13.047.980-0", "56912345678"} {
+		var list patientdirectory.PatientList
+		var readErr error
+		caller.Call(opOf(model.Read), &crud.ReadArgs{Search: typed}, &list, func(e error) { readErr = e })
+		if readErr != nil {
+			t.Fatalf("search %q: %v", typed, readErr)
+		}
+		if len(list) != 1 || list[0].Id != "p1" {
+			t.Errorf("search %q = %v, want p1", typed, list)
+		}
+	}
+}
+
 func TestDelete_DoesNotExist(t *testing.T) {
 	mod, _, err := setupModule()
 	if err != nil {
@@ -504,9 +530,6 @@ func (m noAnswerModule) MountOperations(reg crud.Registry) {
 		},
 		Update: func(a crud.CurrentUser, tx crud.Tx, old, next model.Model, fields []string) (crud.RuleAnswer, error) {
 			return crud.ApplyAndPublish(), nil
-		},
-		Search: func(a crud.CurrentUser, filter model.Model, text string) ([]storage.Condition, error) {
-			return nil, nil
 		},
 	})
 }

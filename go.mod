@@ -6,20 +6,20 @@ require (
 	webtyp.com/appkit v0.2.33
 	webtyp.com/components v0.8.75
 	webtyp.com/country v0.0.2
-	webtyp.com/crud v0.0.16
-	webtyp.com/ddl v0.0.49
+	webtyp.com/crud v0.0.17
+	webtyp.com/ddl v0.0.57
 	webtyp.com/events v0.1.8
-	webtyp.com/fmt v1.0.2
-	webtyp.com/input v0.2.4
+	webtyp.com/fmt v1.0.3
+	webtyp.com/input v0.2.5
 	webtyp.com/lang v0.1.16
-	webtyp.com/model v0.2.23
-	webtyp.com/orm v0.12.31
+	webtyp.com/model v0.2.24
+	webtyp.com/orm v0.12.42
 	webtyp.com/router v0.5.0
-	webtyp.com/storage v0.2.7
+	webtyp.com/storage v0.2.8
 	webtyp.com/svg v0.3.33
 	webtyp.com/time v0.6.4
 	webtyp.com/unixid v0.3.1
-	webtyp.com/view v0.6.83
+	webtyp.com/view v0.6.86
 )
 
 require (
@@ -43,7 +43,7 @@ require (
 	webtyp.com/context v0.0.23 // indirect
 	webtyp.com/css v0.4.31 // indirect
 	webtyp.com/dbus v0.1.1 // indirect
-	webtyp.com/definitioncheck v0.0.3 // indirect
+	webtyp.com/definitioncheck v0.0.10 // indirect
 	webtyp.com/dom v0.13.29 // indirect
 	webtyp.com/env v0.1.3 // indirect
 	webtyp.com/escape v0.1.0 // indirect

@@ -54,3 +54,4 @@
 | [TestNew_RequiresDefaultCountry](../tests/country_phone_test.go) | `New` sin `Deps.Countries` (país por defecto) falla nombrando el campo: el módulo no trae ningún país propio. |
 | [TestCreate_ForeignDocumentNeedsIssuingCountry](../tests/country_phone_test.go) | Pasaporte o cédula extranjera sin país emisor, o con un código que no es país, es rechazado con error en `document_country`; con país válido se acepta. |
 | [TestPhone_InternationalThroughCrudDefaultCountryThroughImport](../tests/country_phone_test.go) | Por `crud` un teléfono sin prefijo es rechazado en `phone` y uno internacional se acepta; `ImportPatient` normaliza uno nacional con el país por defecto (`+56911111111`). |
+| [TestSearch_FoldsAccentsAndDocumentPunctuation](../tests/crud_test.go) | «lucia», «LUCÍA PEREZ», «13047980», «13.047.980-0» y el teléfono sin espacios encuentran al paciente |

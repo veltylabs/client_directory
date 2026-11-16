@@ -95,43 +95,6 @@ func (m *Module) checkDocument(p *Patient) error {
 	return nil
 }
 
-func isPhone(s string) bool {
-	digits := 0
-	for _, r := range s {
-		if r >= '0' && r <= '9' {
-			digits++
-		} else if r != '+' && r != ' ' && r != '-' && r != '(' && r != ')' {
-			return false
-		}
-	}
-	return digits >= 6
-}
-
-// isDocument reconoce un número de documento escrito sin espacios que lleva al
-// menos un dígito: un pasaporte o una cédula extranjera (ej. "AB1234567").
-func isDocument(s string) bool {
-	digits := 0
-	for _, r := range s {
-		if r == ' ' {
-			return false
-		}
-		if r >= '0' && r <= '9' {
-			digits++
-		}
-	}
-	return digits > 0
-}
-
-func digitsOnly(s string) string {
-	var b strings.Builder
-	for _, r := range s {
-		if r >= '0' && r <= '9' {
-			b.WriteRune(r)
-		}
-	}
-	return b.String()
-}
-
 // checkPhone writes the phone in international form (+56911111111). A number
 // typed without a prefix takes the installation's default country; the form
 // always sends one, so this covers imports and other callers.

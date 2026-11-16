@@ -3,6 +3,7 @@ package migrate_test
 import (
 	"testing"
 	"webtyp.com/storage"
+	"webtyp.com/storage/mem"
 
 	"webtyp.com/ddl"
 	"webtyp.com/model"
@@ -10,11 +11,17 @@ import (
 	"github.com/veltylabs/patient_directory/migrate"
 )
 
+// dummyExecer es la base que ve la migración: anota el DDL que recibe y, como ddl reconstruye
+// text_search leyendo filas, deja pasar las lecturas y escrituras a una base en memoria.
 type dummyExecer struct {
+	storage.Conn
 	queries []string
 }
 
 func (e *dummyExecer) Exec(query string, args ...any) (storage.Result, error) {
+	if query == "mem" { // lo que compila la base en memoria para las lecturas y escrituras
+		return e.Conn.Exec(query, args...)
+	}
 	e.queries = append(e.queries, query)
 	return storage.Affected(0), nil
 }
@@ -26,7 +33,7 @@ func (c *dummyCompiler) CompileDDL(s ddl.Stmt, m model.Model) (string, []any, er
 }
 
 func TestMigrate(t *testing.T) {
-	execer := &dummyExecer{}
+	execer := &dummyExecer{Conn: mem.New()}
 	compiler := &dummyCompiler{}
 
 	err := migrate.Migrate(execer, compiler)

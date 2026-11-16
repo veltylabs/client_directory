@@ -20,7 +20,9 @@ var Definition = model.ModuleDefinition{Name: "patient_directory", Entities: []m
 var PatientModel = model.Definition{
 	Name:  "patient",
 	Allow: model.Create | model.Read | model.Update,
-	Rules: model.Rules{Create: model.AddMyBusinessRule, Read: model.AddMyBusinessRule, Update: model.AddMyBusinessRule},
+	Rules: model.Rules{Create: model.AddMyBusinessRule, Read: model.HaveNoBusinessRule, Update: model.AddMyBusinessRule},
+	// El registro es demasiado grande para listarlo entero: abre vacío («Escribe para buscar») y aparece al buscar.
+	ListsOnlyAfterSearch: true,
 	Fields: model.Fields{
 		{Name: "id", Type: model.Text(), DB: &model.FieldDB{PK: true}, OmitEmpty: true},
 		{Name: "tenant_id", Type: model.Text(), NotNull: true, ServerOnly: true},
