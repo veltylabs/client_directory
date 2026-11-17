@@ -1,8 +1,8 @@
 package ui
 
 import (
-	patientdirectory "github.com/veltylabs/patient_directory"
-	"github.com/veltylabs/patient_directory/kinds"
+	clientdirectory "github.com/veltylabs/client_directory"
+	"github.com/veltylabs/client_directory/kinds"
 	"webtyp.com/lang"
 	"webtyp.com/model"
 	"webtyp.com/view"
@@ -20,10 +20,10 @@ func Screens(d view.BrowserDeps) []view.Screen {
 			ID:         ID,
 			Label:      Label,
 			Icon:       ID,
-			Permission: model.ResourceOf(&patientdirectory.PatientModel),
-			Presenter: patientdirectory.NewView(caller,
+			Permission: model.ResourceOf(&clientdirectory.ClientModel),
+			Presenter: clientdirectory.NewView(caller,
 				view.WithDescription(descPatients),
-				view.WithNewRecord(func() view.Record { return &patientdirectory.Patient{DocumentType: kinds.InitialDocument(countries)} }),
+				view.WithNewRecord(func() view.Record { return &clientdirectory.Client{DocumentType: kinds.InitialDocument(countries)} }),
 				view.WithOptions("document_country", countries.Options()...),
 				view.WithOptions("phone", countries.PrefixOptions()...),
 			),

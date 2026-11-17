@@ -7,7 +7,7 @@ import (
 	"webtyp.com/orm"
 	"webtyp.com/storage/mem"
 
-	patientdirectory "github.com/veltylabs/patient_directory"
+	clientdirectory "github.com/veltylabs/client_directory"
 )
 
 func TestCreatePatient_AssignsIDAndNormalisesRut(t *testing.T) {
@@ -35,8 +35,8 @@ func TestCreatePatient_AssignsIDAndNormalisesRut(t *testing.T) {
 	if len(pub.published) != 1 {
 		t.Fatalf("se esperaba 1 evento publicado, se obtuvo %d", len(pub.published))
 	}
-	if pub.published[0].Topic != crud.Topic(patientdirectory.ModelName, "patient", model.Create) {
-		t.Errorf("se esperaba el topic %s, se obtuvo %s", crud.Topic(patientdirectory.ModelName, "patient", model.Create), pub.published[0].Topic)
+	if pub.published[0].Topic != crud.Topic(clientdirectory.ModelName, "client", model.Create) {
+		t.Errorf("se esperaba el topic %s, se obtuvo %s", crud.Topic(clientdirectory.ModelName, "client", model.Create), pub.published[0].Topic)
 	}
 }
 
@@ -46,7 +46,7 @@ func TestCreatePatient_IdempotentRetry(t *testing.T) {
 		t.Fatalf("setup falló: %v", err)
 	}
 
-	p1 := patientdirectory.Patient{
+	p1 := clientdirectory.Client{
 		Id:       "id-1",
 		TenantId: "tenant-1",
 		Rut:      "12345678-K",
@@ -81,7 +81,7 @@ func TestCreatePatient_SameIdDifferentTenant(t *testing.T) {
 		t.Fatalf("setup falló: %v", err)
 	}
 
-	p1 := patientdirectory.Patient{
+	p1 := clientdirectory.Client{
 		Id:       "id-1",
 		TenantId: "tenant-1",
 		Rut:      "12345678-K",
@@ -94,7 +94,7 @@ func TestCreatePatient_SameIdDifferentTenant(t *testing.T) {
 		t.Fatalf("ImportPatient 1 falló: %v", err)
 	}
 
-	p2 := patientdirectory.Patient{
+	p2 := clientdirectory.Client{
 		Id:       "id-1",
 		TenantId: "tenant-2", // Diferente tenant, mismo ID
 		Rut:      "11111111-1",
@@ -121,7 +121,7 @@ func TestCreatePatient_DuplicateRutSameTenant(t *testing.T) {
 
 	_, err = m.CreatePatient("tenant-1", "id-2", "12.345.678-k", "Jane Doe", "", "")
 	fe, ok := err.(*model.FieldError)
-	if !ok || fe.Err != patientdirectory.ErrRutAlreadyExists {
+	if !ok || fe.Err != clientdirectory.ErrRutAlreadyExists {
 		t.Errorf("se esperaba ErrRutAlreadyExists, se obtuvo %v", err)
 	}
 }
@@ -158,7 +158,7 @@ func TestCreatePatient_MissingIdRutOrName(t *testing.T) {
 		t.Fatalf("setup falló: %v", err)
 	}
 
-	pNoId := patientdirectory.Patient{
+	pNoId := clientdirectory.Client{
 		TenantId: "tenant-1",
 		Rut:      "12345678-K",
 		Name:     "John Doe",
@@ -169,7 +169,7 @@ func TestCreatePatient_MissingIdRutOrName(t *testing.T) {
 		t.Errorf("se esperaba ErrIdRequired, se obtuvo %v", err)
 	}
 
-	pNoRut := patientdirectory.Patient{
+	pNoRut := clientdirectory.Client{
 		Id:       "id-1",
 		TenantId: "tenant-1",
 		Name:     "John Doe",
@@ -180,7 +180,7 @@ func TestCreatePatient_MissingIdRutOrName(t *testing.T) {
 		t.Errorf("se esperaba ValidationError para RUT faltante, se obtuvo %v", err)
 	}
 
-	pNoName := patientdirectory.Patient{
+	pNoName := clientdirectory.Client{
 		Id:       "id-2",
 		TenantId: "tenant-1",
 		Rut:      "12345678-K",
@@ -198,14 +198,14 @@ func TestUpdatePatient_RutTakenByAnother(t *testing.T) {
 		t.Fatalf("setup falló: %v", err)
 	}
 
-	p1, _ := m.ImportPatient(patientdirectory.Patient{
+	p1, _ := m.ImportPatient(clientdirectory.Client{
 		Id:       "id-1",
 		TenantId: "tenant-1",
 		Rut:      "11111111-1",
 		Name:     "Patient 1",
 		IsActive: true,
 	})
-	p2, _ := m.ImportPatient(patientdirectory.Patient{
+	p2, _ := m.ImportPatient(clientdirectory.Client{
 		Id:       "id-2",
 		TenantId: "tenant-1",
 		Rut:      "22222222-2",
@@ -217,7 +217,7 @@ func TestUpdatePatient_RutTakenByAnother(t *testing.T) {
 	p2.Rut = "11111111-1"
 	_, err = m.ImportPatient(p2)
 	fe, ok := err.(*model.FieldError)
-	if !ok || fe.Err != patientdirectory.ErrRutAlreadyExists {
+	if !ok || fe.Err != clientdirectory.ErrRutAlreadyExists {
 		t.Errorf("se esperaba ErrRutAlreadyExists, se obtuvo %v", err)
 	}
 	_ = p1
@@ -229,7 +229,7 @@ func TestUpdatePatient_KeepingOwnRut(t *testing.T) {
 		t.Fatalf("setup falló: %v", err)
 	}
 
-	p1, _ := m.ImportPatient(patientdirectory.Patient{
+	p1, _ := m.ImportPatient(clientdirectory.Client{
 		Id:       "id-1",
 		TenantId: "tenant-1",
 		Rut:      "11111111-1",
@@ -265,7 +265,7 @@ func TestFindPatient_NormalisesInput(t *testing.T) {
 }
 
 func TestItemsDeclaredOnFields(t *testing.T) {
-	rec := patientdirectory.Patient{
+	rec := clientdirectory.Client{
 		Id:   "123",
 		Rut:  "12345678-5",
 		Name: "Ana Torres",

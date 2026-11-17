@@ -3,7 +3,7 @@ package tests
 import (
 	"testing"
 
-	patientdirectory "github.com/veltylabs/patient_directory"
+	clientdirectory "github.com/veltylabs/client_directory"
 	"webtyp.com/events/inprocess"
 	"webtyp.com/input"
 	"webtyp.com/model"
@@ -15,7 +15,7 @@ import (
 // escrito de otra forma y lo creaba de nuevo. Con el validador real (nunca el falso de setup_test.go): toda
 // forma en que se escribe el mismo RUT encuentra al mismo paciente, y crearlo otra vez es rechazado.
 func TestFindPatient_AnyWayTheRutIsWritten(t *testing.T) {
-	m, err := patientdirectory.New(orm.New(mem.New()), patientdirectory.Deps{
+	m, err := clientdirectory.New(orm.New(mem.New()), clientdirectory.Deps{
 		Countries:   testCountries,
 		Publisher:   &inprocess.Broker{},
 		TenantID:    "t1",
@@ -35,7 +35,7 @@ func TestFindPatient_AnyWayTheRutIsWritten(t *testing.T) {
 		}
 		_, err = m.CreatePatient("t1", "dup"+string(rune('a'+i)), written, "Ana", "", "")
 		fe, ok := err.(*model.FieldError)
-		if !ok || fe.Err != patientdirectory.ErrRutAlreadyExists {
+		if !ok || fe.Err != clientdirectory.ErrRutAlreadyExists {
 			t.Errorf("CreatePatient(%q) otra vez: se esperaba conflicto (ya existe), se obtuvo %v", written, err)
 		}
 	}

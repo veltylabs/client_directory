@@ -4,9 +4,9 @@ import (
 	"strings"
 	"testing"
 
-	patientdirectory "github.com/veltylabs/patient_directory"
-	"github.com/veltylabs/patient_directory/kinds"
-	"github.com/veltylabs/patient_directory/ui"
+	clientdirectory "github.com/veltylabs/client_directory"
+	"github.com/veltylabs/client_directory/kinds"
+	"github.com/veltylabs/client_directory/ui"
 	"webtyp.com/crud"
 	"webtyp.com/model"
 	"webtyp.com/view"
@@ -29,7 +29,7 @@ func TestScreenSave(t *testing.T) {
 		t.Fatal("presenter is not a view.Saver")
 	}
 
-	p := &patientdirectory.Patient{
+	p := &clientdirectory.Client{
 		Id:           "p-test-1",
 		DocumentType: kinds.DocumentRUT,
 		Rut:          "11111111-1",
@@ -42,14 +42,14 @@ func TestScreenSave(t *testing.T) {
 		t.Fatalf("unexpected err on save: %v", saveErr)
 	}
 
-	p2 := &patientdirectory.Patient{
+	p2 := &clientdirectory.Client{
 		Id:           "p-test-2",
 		DocumentType: kinds.DocumentRUT,
 		Rut:          "11111111-1",
 		Name:         "Duplicate RUT",
 	}
 	saver.Save([]model.Model{p2}, func(err error) { saveErr = err })
-	if model.FieldOf(saveErr) != "rut" || !strings.Contains(saveErr.Error(), string(patientdirectory.ErrRutAlreadyExists)) {
+	if model.FieldOf(saveErr) != "rut" || !strings.Contains(saveErr.Error(), string(clientdirectory.ErrRutAlreadyExists)) {
 		t.Fatalf("expected conflict on duplicate rut, got %v", saveErr)
 	}
 }

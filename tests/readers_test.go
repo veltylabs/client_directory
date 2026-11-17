@@ -4,8 +4,8 @@ import (
 	"testing"
 	"webtyp.com/model"
 
-	patientdirectory "github.com/veltylabs/patient_directory"
-	"github.com/veltylabs/patient_directory/kinds"
+	clientdirectory "github.com/veltylabs/client_directory"
+	"github.com/veltylabs/client_directory/kinds"
 )
 
 func TestGetPatient(t *testing.T) {
@@ -13,7 +13,7 @@ func TestGetPatient(t *testing.T) {
 	if err != nil {
 		t.Fatalf("setup: %v", err)
 	}
-	_, err = m.ImportPatient(patientdirectory.Patient{
+	_, err = m.ImportPatient(clientdirectory.Client{
 		Id:           "p1",
 		TenantId:     "t1",
 		DocumentType: kinds.DocumentRUT,
@@ -47,7 +47,7 @@ func TestGetPatientMissing(t *testing.T) {
 	if err != nil {
 		t.Fatalf("setup: %v", err)
 	}
-	_, err = m.ImportPatient(patientdirectory.Patient{
+	_, err = m.ImportPatient(clientdirectory.Client{
 		Id:           "p1",
 		TenantId:     "t1",
 		DocumentType: kinds.DocumentRUT,
@@ -75,7 +75,7 @@ func TestFindPatient(t *testing.T) {
 	if err != nil {
 		t.Fatalf("setup: %v", err)
 	}
-	_, err = m.ImportPatient(patientdirectory.Patient{
+	_, err = m.ImportPatient(clientdirectory.Client{
 		Id:           "p1",
 		TenantId:     "t1",
 		DocumentType: kinds.DocumentRUT,
@@ -134,7 +134,7 @@ func TestCreatePatientDuplicate(t *testing.T) {
 	if err != nil {
 		t.Fatalf("setup: %v", err)
 	}
-	_, err = m.ImportPatient(patientdirectory.Patient{
+	_, err = m.ImportPatient(clientdirectory.Client{
 		Id:           "p1",
 		TenantId:     "t1",
 		DocumentType: kinds.DocumentRUT,
@@ -148,7 +148,7 @@ func TestCreatePatientDuplicate(t *testing.T) {
 
 	_, err = m.CreatePatient("t1", "p3", "12.345.678-5", "Ana 2", "", "")
 	fe, ok := err.(*model.FieldError)
-	if !ok || fe.Err != patientdirectory.ErrRutAlreadyExists {
+	if !ok || fe.Err != clientdirectory.ErrRutAlreadyExists {
 		t.Errorf("expected ErrRutAlreadyExists, got %v", err)
 	}
 }

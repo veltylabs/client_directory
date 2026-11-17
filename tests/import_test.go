@@ -3,14 +3,14 @@ package tests
 import (
 	"testing"
 
-	patientdirectory "github.com/veltylabs/patient_directory"
-	"github.com/veltylabs/patient_directory/kinds"
+	clientdirectory "github.com/veltylabs/client_directory"
+	"github.com/veltylabs/client_directory/kinds"
 )
 
 func TestImportPatientCreatesThenUpdates(t *testing.T) {
 	m, pub, _ := setupModuleWithTenant("t")
 
-	p := patientdirectory.Patient{
+	p := clientdirectory.Client{
 		Id:           "1",
 		TenantId:     "t",
 		Name:         "Ana 1",
@@ -43,7 +43,7 @@ func TestImportPatientCreatesThenUpdates(t *testing.T) {
 func TestImportPatientUnverified(t *testing.T) {
 	m, pub, _ := setupModuleWithTenant("t")
 
-	p, err := m.ImportPatient(patientdirectory.Patient{
+	p, err := m.ImportPatient(clientdirectory.Client{
 		Id:           "1",
 		TenantId:     "t",
 		Name:         "Ana",

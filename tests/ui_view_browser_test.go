@@ -1,13 +1,13 @@
 package tests
 
 import (
-	"github.com/veltylabs/patient_directory/kinds"
+	"github.com/veltylabs/client_directory/kinds"
 	"testing"
 	"webtyp.com/model"
 	"webtyp.com/view"
 
-	patientdirectory "github.com/veltylabs/patient_directory"
-	"github.com/veltylabs/patient_directory/ui"
+	clientdirectory "github.com/veltylabs/client_directory"
+	"github.com/veltylabs/client_directory/ui"
 )
 
 func TestUI_Screens(t *testing.T) {
@@ -23,7 +23,7 @@ func TestUI_Screens(t *testing.T) {
 	if s.ID != ui.ID {
 		t.Errorf("ID = %q, want %q", s.ID, ui.ID)
 	}
-	if string(s.Permission) != string(model.ResourceOf(&patientdirectory.PatientModel)) {
+	if string(s.Permission) != string(model.ResourceOf(&clientdirectory.ClientModel)) {
 		t.Errorf("Permission = %q, want patient", s.Permission)
 	}
 	if s.Presenter.Description() == "" {
@@ -36,7 +36,7 @@ func TestUI_NewRecordStartsWithTheDocumentOfTheDefaultCountry(t *testing.T) {
 	foreign := testCountries
 	foreign.Default = "AR"
 	screens := ui.Screens(view.BrowserDeps{Caller: view.NewRecords().Caller(&mockCaller{}), Countries: foreign})
-	p, ok := screens[0].Presenter.NewRecord().(*patientdirectory.Patient)
+	p, ok := screens[0].Presenter.NewRecord().(*clientdirectory.Client)
 	if !ok || p.DocumentType != kinds.DocumentPassport {
 		t.Fatalf("new record must start with passport, got %#v", screens[0].Presenter.NewRecord())
 	}

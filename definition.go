@@ -1,13 +1,13 @@
-package patientdirectory
+package clientdirectory
 
 import (
-	"github.com/veltylabs/patient_directory/kinds"
+	"github.com/veltylabs/client_directory/kinds"
 	"webtyp.com/components/agedate"
 	"webtyp.com/input"
 	"webtyp.com/model"
 )
 
-// PatientModel es el registro del establecimiento para las personas que atiende:
+// ClientModel es el registro del establecimiento para las personas que atiende:
 // IDENTIDAD y CONTACTO únicamente. Los datos clínicos —diagnósticos, atenciones, recetas—
 // pertenecen a clinical_encounter y nunca deben agregarse aquí.
 //
@@ -15,10 +15,15 @@ import (
 // de columna única, y un RUT es único por TENANT, no globalmente. La restricción
 // se aplica en CreatePatient contra ErrRutAlreadyExists —la misma regla de capa de
 // aplicación que device_manager aplica a una IP de dispositivo.
-var Definition = model.ModuleDefinition{Name: "patient_directory", Entities: []model.Definition{PatientModel}}
+var Definition = model.ModuleDefinition{
+	Name:       "client_directory",
+	Entities:   []model.Definition{ClientModel},
+	Industries: model.AnyIndustry(),
+	Uses:       []model.ModuleUse{model.ManagesEverything, model.WorksWithAllRecords, model.SeesOwnRecords},
+}
 
-var PatientModel = model.Definition{
-	Name:  "patient",
+var ClientModel = model.Definition{
+	Name:  "client",
 	Allow: model.Create | model.Read | model.Update,
 	Rules: model.Rules{Create: model.AddMyBusinessRule, Read: model.HaveNoBusinessRule, Update: model.AddMyBusinessRule},
 	// El registro es demasiado grande para listarlo entero: abre vacío («Escribe para buscar») y aparece al buscar.
@@ -49,8 +54,8 @@ const (
 	ErrIdRequired       model.Invalid  = "patient id is required"
 	ErrIdTaken          model.Conflict = "patient belongs to another tenant"
 
-	ErrDocumentType   model.Invalid = "the document type must be RUT, passport, foreign id card, no document or to verify"
+	ErrDocumentType    model.Invalid = "the document type must be RUT, passport, foreign id card, no document or to verify"
 	ErrDocumentCountry model.Invalid = "the issuing country is required for a foreign document"
-	ErrDocumentNumber model.Invalid = "a passport or foreign id card needs its number"
-	ErrSex            model.Invalid = "sex must be female, male or not recorded"
+	ErrDocumentNumber  model.Invalid = "a passport or foreign id card needs its number"
+	ErrSex             model.Invalid = "sex must be female, male or not recorded"
 )

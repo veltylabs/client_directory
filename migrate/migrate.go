@@ -3,7 +3,7 @@ package migrate
 import (
 	"webtyp.com/ddl"
 
-	patientdirectory "github.com/veltylabs/patient_directory"
+	clientdirectory "github.com/veltylabs/client_directory"
 )
 
 // Migrate reconcilia el esquema de base de datos del cual patient_directory es propietario: Patient.
@@ -27,5 +27,14 @@ import (
 //	compiler, _ := conn.(ddl.Compiler)
 //	err := migrate.Migrate(conn, compiler)
 func Migrate(conn ddl.Execer, ddlCompiler ddl.Compiler) error {
-	return ddl.New(conn, ddlCompiler).Sync(&patientdirectory.Patient{})
+	if intro, ok := conn.(ddl.TableIntrospector); ok {
+		oldCols, _ := intro.TableColumns("patient")
+		newCols, _ := intro.TableColumns("client")
+		if len(oldCols) > 0 && len(newCols) == 0 {
+			if _, err := conn.Exec("ALTER TABLE patient RENAME TO client"); err != nil {
+				return err
+			}
+		}
+	}
+	return ddl.New(conn, ddlCompiler).Sync(&clientdirectory.Client{})
 }

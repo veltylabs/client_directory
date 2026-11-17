@@ -1,18 +1,18 @@
 package seed
 
 import (
-	patientdirectory "github.com/veltylabs/patient_directory"
-	"github.com/veltylabs/patient_directory/kinds"
+	clientdirectory "github.com/veltylabs/client_directory"
+	"github.com/veltylabs/client_directory/kinds"
 )
 
 // Data contiene las filas de demostración creadas por Load.
 type Data struct {
-	Patients []patientdirectory.Patient
+	Patients []clientdirectory.Client
 }
 
 // Load inserta los datos semilla en el módulo usando sus métodos de dominio.
-func Load(m *patientdirectory.Module, tenantID string) (Data, error) {
-	items := []patientdirectory.Patient{
+func Load(m *clientdirectory.Module, tenantID string) (Data, error) {
+	items := []clientdirectory.Client{
 		{
 			Id:        "demo-patient-1",
 			TenantId:  tenantID,

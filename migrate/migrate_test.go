@@ -8,7 +8,7 @@ import (
 	"webtyp.com/ddl"
 	"webtyp.com/model"
 
-	"github.com/veltylabs/patient_directory/migrate"
+	"github.com/veltylabs/client_directory/migrate"
 )
 
 // dummyExecer es la base que ve la migración: anota el DDL que recibe y, como ddl reconstruye

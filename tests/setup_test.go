@@ -9,7 +9,7 @@ import (
 	"webtyp.com/orm"
 	"webtyp.com/storage/mem"
 
-	patientdirectory "github.com/veltylabs/patient_directory"
+	clientdirectory "github.com/veltylabs/client_directory"
 )
 
 type fakePublisher struct {
@@ -28,31 +28,31 @@ func fakeValidateRUT(rut string) (string, error) {
 	cleaned = strings.ReplaceAll(cleaned, "-", "")
 	cleaned = strings.ToUpper(cleaned)
 	if cleaned == "" {
-		return "", patientdirectory.ErrDocumentNumber
+		return "", clientdirectory.ErrDocumentNumber
 	}
 	return cleaned, nil
 }
 
-func setupModule() (*patientdirectory.Module, *fakePublisher, error) {
+func setupModule() (*clientdirectory.Module, *fakePublisher, error) {
 	return setupModuleWithTenant("test-tenant")
 }
 
-func setupModuleWithTenant(tenantID string) (*patientdirectory.Module, *fakePublisher, error) {
+func setupModuleWithTenant(tenantID string) (*clientdirectory.Module, *fakePublisher, error) {
 	conn := mem.New()
 	db := orm.New(conn)
 	return setupModuleWithTenantAndDB(tenantID, db)
 }
 
-func setupModuleWithTenantAndDB(tenantID string, db *orm.DB) (*patientdirectory.Module, *fakePublisher, error) {
+func setupModuleWithTenantAndDB(tenantID string, db *orm.DB) (*clientdirectory.Module, *fakePublisher, error) {
 	pub := &fakePublisher{}
-	deps := patientdirectory.Deps{
+	deps := clientdirectory.Deps{
 		Countries:   testCountries,
 		Publisher:   pub,
 		ValidateRUT: fakeValidateRUT,
 		TenantID:    tenantID,
 		IDs:         &testIDGen{},
 	}
-	m, err := patientdirectory.New(db, deps)
+	m, err := clientdirectory.New(db, deps)
 	if err != nil {
 		return nil, nil, err
 	}

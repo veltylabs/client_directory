@@ -1,9 +1,9 @@
-package patientdirectory
+package clientdirectory
 
 import (
 	"strings"
 
-	"github.com/veltylabs/patient_directory/kinds"
+	"github.com/veltylabs/client_directory/kinds"
 	"webtyp.com/country"
 	"webtyp.com/events"
 	"webtyp.com/fmt"
@@ -64,7 +64,7 @@ func New(db *orm.DB, deps Deps) (*Module, error) {
 
 // checkDocument normalizes and validates p's document by its type. An empty type means RUT (what the form sends
 // today). Only a RUT is validated; other documents are stored as typed, upper-cased and trimmed.
-func (m *Module) checkDocument(p *Patient) error {
+func (m *Module) checkDocument(p *Client) error {
 	if p.DocumentType == "" {
 		p.DocumentType = kinds.DocumentRUT
 	}
@@ -98,7 +98,7 @@ func (m *Module) checkDocument(p *Patient) error {
 // checkPhone writes the phone in international form (+56911111111). A number
 // typed without a prefix takes the installation's default country; the form
 // always sends one, so this covers imports and other callers.
-func (m *Module) checkPhone(p *Patient) error {
+func (m *Module) checkPhone(p *Client) error {
 	if p.Phone == "" {
 		return nil
 	}

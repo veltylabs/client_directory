@@ -1,7 +1,7 @@
-package patientdirectory
+package clientdirectory
 
 import (
-	"github.com/veltylabs/patient_directory/kinds"
+	"github.com/veltylabs/client_directory/kinds"
 	"webtyp.com/crud"
 	"webtyp.com/events"
 	"webtyp.com/model"
@@ -14,7 +14,7 @@ func (m *Module) GetPatient(tenantID, id string) (name, documentNumber, phone, e
 	if tenantID == "" || id == "" || tenantID != m.tenantID {
 		return "", "", "", "", false, nil
 	}
-	var p Patient
+	var p Client
 	err = m.store.ReadOne(&p, id)
 	if model.KindOf(err) == model.ErrorNotFound {
 		return "", "", "", "", false, nil
@@ -35,14 +35,14 @@ func (m *Module) FindPatient(tenantID, documentNumber string) (id, name, phone, 
 	if err != nil {
 		return "", "", "", "", false, nil
 	}
-	var foundPatient Patient
+	var foundPatient Client
 	var hasPatient bool
-	err = m.store.ReadAll(func() model.Model { return &Patient{} }, crud.Query{Conditions: []storage.Condition{
-		storage.Eq(Patient_.DocumentType, kinds.DocumentRUT),
-		storage.Eq(Patient_.Rut, normRut),
+	err = m.store.ReadAll(func() model.Model { return &Client{} }, crud.Query{Conditions: []storage.Condition{
+		storage.Eq(Client_.DocumentType, kinds.DocumentRUT),
+		storage.Eq(Client_.Rut, normRut),
 	}}, func(r model.Model) {
 		if !hasPatient {
-			p := r.(*Patient)
+			p := r.(*Client)
 			if p.DocumentCountry == "" {
 				foundPatient = *p
 				hasPatient = true
@@ -67,7 +67,7 @@ func (m *Module) CreatePatient(tenantID, id, documentNumber, name, phone, email 
 	if id == "" {
 		id = m.store.NewID()
 	}
-	p := Patient{
+	p := Client{
 		Id:           id,
 		TenantId:     tenantID,
 		DocumentType: kinds.DocumentRUT,
@@ -87,7 +87,7 @@ func (m *Module) CreatePatient(tenantID, id, documentNumber, name, phone, email 
 		return "", err
 	}
 	if m.pub != nil {
-		m.pub.Publish(events.Event{Topic: crud.Topic(ModelName, (&Patient{}).ModelName(), model.Create), Payload: &crud.Change{Record: &p}})
+		m.pub.Publish(events.Event{Topic: crud.Topic(ModelName, (&Client{}).ModelName(), model.Create), Payload: &crud.Change{Record: &p}})
 	}
 	return p.Id, nil
 }

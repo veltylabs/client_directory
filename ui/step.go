@@ -1,8 +1,8 @@
 package ui
 
 import (
-	patientdirectory "github.com/veltylabs/patient_directory"
-	"github.com/veltylabs/patient_directory/kinds"
+	clientdirectory "github.com/veltylabs/client_directory"
+	"github.com/veltylabs/client_directory/kinds"
 	"webtyp.com/crud"
 	. "webtyp.com/dom"
 	h "webtyp.com/html"
@@ -70,7 +70,7 @@ func (s *PatientStep) Reset() {
 }
 
 func (s *PatientStep) operation(action model.Action) router.Operation {
-	return router.Operation{Module: patientdirectory.ModelName, Entity: (&patientdirectory.Patient{}).ModelName(), Action: action}
+	return router.Operation{Module: clientdirectory.ModelName, Entity: (&clientdirectory.Client{}).ModelName(), Action: action}
 }
 
 // search busca por el documento escrito; sin coincidencia exacta ofrece registrar.
@@ -82,7 +82,7 @@ func (s *PatientStep) search() {
 	if normalized, err := input.NormalizeRUT(doc); err == nil {
 		want = normalized
 	}
-	var found patientdirectory.PatientList
+	var found clientdirectory.ClientList
 	s.caller.Call(s.operation(model.Read), &crud.ReadArgs{Search: doc, Limit: crud.MaxPage}, &found, func(err error) {
 		if err != nil {
 			s.errMsg.Set(err.Error())
@@ -109,11 +109,11 @@ func (s *PatientStep) registerForm() *Element {
 
 func (s *PatientStep) register() {
 	s.errMsg.Set("")
-	p := &patientdirectory.Patient{
+	p := &clientdirectory.Client{
 		Id: s.ids.NewID(), Rut: s.document.Get(), DocumentType: kinds.InitialDocument(s.deps.Countries),
 		Name: s.name.Get(), Phone: s.phone.Get(), Email: s.email.Get(), IsActive: true,
 	}
-	var saved patientdirectory.Patient
+	var saved clientdirectory.Client
 	s.caller.Call(s.operation(model.Create), &crud.CreateArgs{Records: []model.Model{p}}, &saved, func(err error) {
 		if err != nil {
 			s.errMsg.Set(err.Error())
@@ -123,7 +123,7 @@ func (s *PatientStep) register() {
 	})
 }
 
-func (s *PatientStep) showCard(p patientdirectory.Patient) {
+func (s *PatientStep) showCard(p clientdirectory.Client) {
 	s.result.Set([]*Element{h.Div().Child(
 		h.Strong().Text(p.Name),
 		h.P().Text(p.Phone),

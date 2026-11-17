@@ -3,9 +3,9 @@
 package seed
 
 import (
-	patientdirectory "github.com/veltylabs/patient_directory"
-	"github.com/veltylabs/patient_directory/migrate"
-	"github.com/veltylabs/patient_directory/ui"
+	clientdirectory "github.com/veltylabs/client_directory"
+	"github.com/veltylabs/client_directory/migrate"
+	"github.com/veltylabs/client_directory/ui"
 	"webtyp.com/country"
 	"webtyp.com/crud"
 	"webtyp.com/ddl"
@@ -27,7 +27,7 @@ func Demo() (view.Demo, error) {
 		return view.Demo{}, err
 	}
 	tenantID := "demo-tenant"
-	mod, err := patientdirectory.New(db, patientdirectory.Deps{
+	mod, err := clientdirectory.New(db, clientdirectory.Deps{
 		TenantID:    tenantID,
 		IDs:         ids,
 		ValidateRUT: input.NormalizeRUT,
@@ -46,7 +46,7 @@ func Demo() (view.Demo, error) {
 		ActingAs:  "u1",
 		Modules:   []crud.Module{mod},
 		Migrations: []ddl.Step{
-			{Name: patientdirectory.ModelName, Run: migrate.Migrate},
+			{Name: clientdirectory.ModelName, Run: migrate.Migrate},
 		},
 		Screens: func(d view.BrowserDeps) []view.Screen {
 			return ui.Screens(d)

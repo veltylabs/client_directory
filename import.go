@@ -1,4 +1,4 @@
-package patientdirectory
+package clientdirectory
 
 import (
 	"webtyp.com/crud"
@@ -7,40 +7,40 @@ import (
 )
 
 var importUpdateFields = []string{
-	Patient_.Rut,
-	Patient_.DocumentType,
-	Patient_.DocumentCountry,
-	Patient_.Name,
-	Patient_.Birthdate,
-	Patient_.BirthdateEstimated,
-	Patient_.Sex,
-	Patient_.Phone,
-	Patient_.Email,
-	Patient_.Address,
-	Patient_.Notes,
-	Patient_.IsActive,
-	Patient_.UpdatedAt,
+	Client_.Rut,
+	Client_.DocumentType,
+	Client_.DocumentCountry,
+	Client_.Name,
+	Client_.Birthdate,
+	Client_.BirthdateEstimated,
+	Client_.Sex,
+	Client_.Phone,
+	Client_.Email,
+	Client_.Address,
+	Client_.Notes,
+	Client_.IsActive,
+	Client_.UpdatedAt,
 }
 
 // ImportPatient guarda un paciente de un sistema anterior con el ID que tenía allí:
 // lo crea, o actualiza todos los campos si ese ID ya existe, de modo que importar
 // dos veces deja la misma fila. Valida exactamente como CreatePatient y no publica eventos.
-func (m *Module) ImportPatient(p Patient) (Patient, error) {
+func (m *Module) ImportPatient(p Client) (Client, error) {
 	if p.Id == "" {
-		return Patient{}, &model.FieldError{Field: Patient_.Id, Err: ErrIdRequired}
+		return Client{}, &model.FieldError{Field: Client_.Id, Err: ErrIdRequired}
 	}
 	if p.TenantId != "" && p.TenantId != m.tenantID {
-		return Patient{}, ErrIdTaken
+		return Client{}, ErrIdTaken
 	}
 	p.TenantId = m.tenantID
 	if err := m.checkDocument(&p); err != nil {
-		return Patient{}, err
+		return Client{}, err
 	}
 	if err := m.checkPhone(&p); err != nil {
-		return Patient{}, err
+		return Client{}, err
 	}
 	if err := model.ValidateFields(model.ActionCreate, &p); err != nil {
-		return Patient{}, err
+		return Client{}, err
 	}
 	p.UpdatedAt = time.NowNano()
 
@@ -48,7 +48,7 @@ func (m *Module) ImportPatient(p Patient) (Patient, error) {
 		if err := m.sameDocument(tx, &p); err != nil {
 			return err
 		}
-		var existing Patient
+		var existing Client
 		err := tx.ReadOne(&existing, p.Id)
 		if err == nil {
 			return tx.UpdateFields(&p, p.Id, importUpdateFields)
@@ -59,7 +59,7 @@ func (m *Module) ImportPatient(p Patient) (Patient, error) {
 		return err
 	})
 	if err != nil {
-		return Patient{}, err
+		return Client{}, err
 	}
 	return p, nil
 }

@@ -1,4 +1,4 @@
-package patientdirectory
+package clientdirectory
 
 import (
 	"webtyp.com/lang"
@@ -18,7 +18,7 @@ const (
 // renderizador lo dibuja.
 //
 // Ops NO lleva Delete: view.NewCallerLister implementa exactamente las
-// capacidades de escritura gobernadas por PatientModel.Allow. Un paciente se desactiva,
+// capacidades de escritura gobernadas por ClientModel.Allow. Un paciente se desactiva,
 // nunca se elimina (consulte AGENTS.md).
 func NewView(caller router.Caller, opts ...view.Option) view.Presenter {
 	b := view.NewCallerLister(caller,
@@ -26,10 +26,10 @@ func NewView(caller router.Caller, opts ...view.Option) view.Presenter {
 			Module: ModelName,
 			Page:   view.Page{First: 0, Size: 20, More: true},
 		},
-		func() model.TableSlice { return &PatientList{} })
+		func() model.TableSlice { return &ClientList{} })
 	allOpts := append([]view.Option{
 		view.WithTitle(titlePatients),
 		view.WithSearchPlaceholder(searchPlaceholderPatients),
 	}, opts...)
-	return view.New(b, &Patient{}, allOpts...)
+	return view.New(b, &Client{}, allOpts...)
 }

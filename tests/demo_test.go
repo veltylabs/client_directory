@@ -5,7 +5,7 @@ package tests
 import (
 	"testing"
 
-	"github.com/veltylabs/patient_directory/seed"
+	"github.com/veltylabs/client_directory/seed"
 	"webtyp.com/crud"
 	"webtyp.com/time"
 	"webtyp.com/view"

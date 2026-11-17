@@ -3,9 +3,9 @@ package tests
 import (
 	"testing"
 
-	patientdirectory "github.com/veltylabs/patient_directory"
-	"github.com/veltylabs/patient_directory/kinds"
-	"github.com/veltylabs/patient_directory/ui"
+	clientdirectory "github.com/veltylabs/client_directory"
+	"github.com/veltylabs/client_directory/kinds"
+	"github.com/veltylabs/client_directory/ui"
 	"webtyp.com/crud"
 	"webtyp.com/model"
 	"webtyp.com/view"
@@ -15,7 +15,7 @@ func TestCreatePatientDefaultsToRUT(t *testing.T) {
 	m, _, _ := setupModuleWithTenant("t")
 
 	// bad check digit
-	_, err := m.ImportPatient(patientdirectory.Patient{
+	_, err := m.ImportPatient(clientdirectory.Client{
 		Id:       "1",
 		TenantId: "t",
 		Name:     "Ana",
@@ -30,7 +30,7 @@ func TestCreatePatientDefaultsToRUT(t *testing.T) {
 	}
 
 	// good RUT
-	p, err := m.ImportPatient(patientdirectory.Patient{
+	p, err := m.ImportPatient(clientdirectory.Client{
 		Id:       "2",
 		TenantId: "t",
 		Name:     "Ana",
@@ -50,7 +50,7 @@ func TestCreatePatientDefaultsToRUT(t *testing.T) {
 func TestPassportNeedsNumber(t *testing.T) {
 	m, _, _ := setupModuleWithTenant("t")
 
-	_, err := m.ImportPatient(patientdirectory.Patient{
+	_, err := m.ImportPatient(clientdirectory.Client{
 		Id:           "1",
 		TenantId:     "t",
 		Name:         "Ana",
@@ -61,15 +61,15 @@ func TestPassportNeedsNumber(t *testing.T) {
 		t.Fatal("expected error")
 	}
 	fe, ok := err.(*model.FieldError)
-	if !ok || fe.Field != "rut" || fe.Err != patientdirectory.ErrDocumentNumber {
-		t.Fatalf("expected %v, got %v", patientdirectory.ErrDocumentNumber, err)
+	if !ok || fe.Field != "rut" || fe.Err != clientdirectory.ErrDocumentNumber {
+		t.Fatalf("expected %v, got %v", clientdirectory.ErrDocumentNumber, err)
 	}
 }
 
 func TestPassportStoredAsTyped(t *testing.T) {
 	m, _, _ := setupModuleWithTenant("t")
 
-	p, err := m.ImportPatient(patientdirectory.Patient{
+	p, err := m.ImportPatient(clientdirectory.Client{
 		Id:              "1",
 		TenantId:        "t",
 		Name:            "Ana",
@@ -91,7 +91,7 @@ func TestPassportStoredAsTyped(t *testing.T) {
 func TestNoDocument(t *testing.T) {
 	m, _, _ := setupModuleWithTenant("t")
 
-	p, err := m.ImportPatient(patientdirectory.Patient{
+	p, err := m.ImportPatient(clientdirectory.Client{
 		Id:           "1",
 		TenantId:     "t",
 		Name:         "Ana",
@@ -109,7 +109,7 @@ func TestNoDocument(t *testing.T) {
 func TestSameDocumentTwice(t *testing.T) {
 	m, _, _ := setupModuleWithTenant("t")
 
-	p := patientdirectory.Patient{
+	p := clientdirectory.Client{
 		Id:              "1",
 		TenantId:        "t",
 		Name:            "Ana",
@@ -125,7 +125,7 @@ func TestSameDocumentTwice(t *testing.T) {
 	p.Id = "2"
 	_, err = m.ImportPatient(p)
 	fe, ok := err.(*model.FieldError)
-	if !ok || fe.Err != patientdirectory.ErrRutAlreadyExists {
+	if !ok || fe.Err != clientdirectory.ErrRutAlreadyExists {
 		t.Fatalf("expected ErrRutAlreadyExists, got %v", err)
 	}
 }
@@ -133,7 +133,7 @@ func TestSameDocumentTwice(t *testing.T) {
 func TestSamePassportOtherCountry(t *testing.T) {
 	m, _, _ := setupModuleWithTenant("t")
 
-	_, err := m.ImportPatient(patientdirectory.Patient{
+	_, err := m.ImportPatient(clientdirectory.Client{
 		Id:              "1",
 		TenantId:        "t",
 		Name:            "Ana",
@@ -145,7 +145,7 @@ func TestSamePassportOtherCountry(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	_, err = m.ImportPatient(patientdirectory.Patient{
+	_, err = m.ImportPatient(clientdirectory.Client{
 		Id:              "2",
 		TenantId:        "t",
 		Name:            "Ana",
@@ -161,7 +161,7 @@ func TestSamePassportOtherCountry(t *testing.T) {
 func TestTwoWithoutDocument(t *testing.T) {
 	m, _, _ := setupModuleWithTenant("t")
 
-	_, err := m.ImportPatient(patientdirectory.Patient{
+	_, err := m.ImportPatient(clientdirectory.Client{
 		Id:           "1",
 		TenantId:     "t",
 		Name:         "Ana",
@@ -171,7 +171,7 @@ func TestTwoWithoutDocument(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	_, err = m.ImportPatient(patientdirectory.Patient{
+	_, err = m.ImportPatient(clientdirectory.Client{
 		Id:           "2",
 		TenantId:     "t",
 		Name:         "Ana",
@@ -185,7 +185,7 @@ func TestTwoWithoutDocument(t *testing.T) {
 func TestSexValues(t *testing.T) {
 	m, _, _ := setupModuleWithTenant("t")
 
-	_, err := m.ImportPatient(patientdirectory.Patient{
+	_, err := m.ImportPatient(clientdirectory.Client{
 		Id:       "1",
 		TenantId: "t",
 		Name:     "Ana",
@@ -204,7 +204,7 @@ func TestSexValues(t *testing.T) {
 func TestInactivePatientSaves(t *testing.T) {
 	m, _, _ := setupModuleWithTenant("t")
 
-	p, err := m.ImportPatient(patientdirectory.Patient{
+	p, err := m.ImportPatient(clientdirectory.Client{
 		Id:       "1",
 		TenantId: "t",
 		Name:     "Ana",
@@ -230,7 +230,7 @@ func TestPassportNumberWithRUTTypeFailsOnNumber(t *testing.T) {
 	saver := ui.Screens(view.BrowserDeps{Caller: caller, Countries: testCountries})[0].Presenter.(view.Saver)
 
 	var saveErr error
-	saver.Save([]model.Model{&patientdirectory.Patient{
+	saver.Save([]model.Model{&clientdirectory.Client{
 		Id: "p-pass-1", DocumentType: kinds.DocumentRUT, Rut: "bad", Name: "Foreign Visitor",
 	}}, func(err error) { saveErr = err })
 	if saveErr == nil || model.FieldOf(saveErr) != "rut" {

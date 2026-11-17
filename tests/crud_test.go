@@ -4,19 +4,19 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/veltylabs/patient_directory/kinds"
+	"github.com/veltylabs/client_directory/kinds"
 	"webtyp.com/crud"
 	"webtyp.com/model"
 	"webtyp.com/orm"
 	"webtyp.com/router"
 	"webtyp.com/storage/mem"
 
-	patientdirectory "github.com/veltylabs/patient_directory"
+	clientdirectory "github.com/veltylabs/client_directory"
 )
 
 // opOf is the operation of one action on patient.
 func opOf(a model.Action) router.Operation {
-	return router.Operation{Module: patientdirectory.ModelName, Entity: (&patientdirectory.Patient{}).ModelName(), Action: a}
+	return router.Operation{Module: clientdirectory.ModelName, Entity: (&clientdirectory.Client{}).ModelName(), Action: a}
 }
 
 func TestTenant_ReadOtherTenantIsNotFound(t *testing.T) {
@@ -34,10 +34,10 @@ func TestTenant_ReadOtherTenantIsNotFound(t *testing.T) {
 	callerA := crud.LoopbackActingAs(nil, "u1", modA)
 	callerB := crud.LoopbackActingAs(nil, "u1", modB)
 
-	var saved patientdirectory.Patient
+	var saved clientdirectory.Client
 	var errA error
 	callerA.Call(opOf(model.Create),
-		&crud.CreateArgs{Records: []model.Model{&patientdirectory.Patient{
+		&crud.CreateArgs{Records: []model.Model{&clientdirectory.Client{
 			Id:           "p1",
 			DocumentType: kinds.DocumentRUT,
 			Rut:          "11111111-1",
@@ -47,7 +47,7 @@ func TestTenant_ReadOtherTenantIsNotFound(t *testing.T) {
 		t.Fatalf("callerA create: %v", errA)
 	}
 
-	var list patientdirectory.PatientList
+	var list clientdirectory.ClientList
 	var errB error
 	callerB.Call(opOf(model.Read),
 		&crud.ReadArgs{ID: "p1"}, &list, func(e error) { errB = e })
@@ -63,10 +63,10 @@ func TestTenant_ClientTenantRejected(t *testing.T) {
 	}
 	caller := crud.LoopbackActingAs(nil, "u1", mod)
 
-	var saved patientdirectory.Patient
+	var saved clientdirectory.Client
 	var callErr error
 	caller.Call(opOf(model.Create),
-		&crud.CreateArgs{Records: []model.Model{&patientdirectory.Patient{
+		&crud.CreateArgs{Records: []model.Model{&clientdirectory.Client{
 			Id:           "p1",
 			TenantId:     "b",
 			DocumentType: kinds.DocumentRUT,
@@ -85,10 +85,10 @@ func TestCreate_DuplicateDocumentRejected(t *testing.T) {
 	}
 	caller := crud.LoopbackActingAs(nil, "u1", mod)
 
-	var saved patientdirectory.Patient
+	var saved clientdirectory.Client
 	var err1 error
 	caller.Call(opOf(model.Create),
-		&crud.CreateArgs{Records: []model.Model{&patientdirectory.Patient{
+		&crud.CreateArgs{Records: []model.Model{&clientdirectory.Client{
 			Id:           "p1",
 			DocumentType: kinds.DocumentRUT,
 			Rut:          "11111111-1",
@@ -100,13 +100,13 @@ func TestCreate_DuplicateDocumentRejected(t *testing.T) {
 
 	var err2 error
 	caller.Call(opOf(model.Create),
-		&crud.CreateArgs{Records: []model.Model{&patientdirectory.Patient{
+		&crud.CreateArgs{Records: []model.Model{&clientdirectory.Client{
 			Id:           "p2",
 			DocumentType: kinds.DocumentRUT,
 			Rut:          "11111111-1",
 			Name:         "Patient 2",
 		}}}, &saved, func(e error) { err2 = e })
-	if model.FieldOf(err2) != "rut" || !strings.Contains(err2.Error(), string(patientdirectory.ErrRutAlreadyExists)) {
+	if model.FieldOf(err2) != "rut" || !strings.Contains(err2.Error(), string(clientdirectory.ErrRutAlreadyExists)) {
 		t.Fatalf("expected field error on rut with ErrRutAlreadyExists, got %v", err2)
 	}
 }
@@ -118,10 +118,10 @@ func TestCreate_RetryIsIdempotent(t *testing.T) {
 	}
 	caller := crud.LoopbackActingAs(pub, "u1", mod)
 
-	var saved patientdirectory.Patient
+	var saved clientdirectory.Client
 	var err1 error
 	caller.Call(opOf(model.Create),
-		&crud.CreateArgs{Records: []model.Model{&patientdirectory.Patient{
+		&crud.CreateArgs{Records: []model.Model{&clientdirectory.Client{
 			Id:           "p1",
 			DocumentType: kinds.DocumentRUT,
 			Rut:          "11111111-1",
@@ -133,7 +133,7 @@ func TestCreate_RetryIsIdempotent(t *testing.T) {
 
 	var err2 error
 	caller.Call(opOf(model.Create),
-		&crud.CreateArgs{Records: []model.Model{&patientdirectory.Patient{
+		&crud.CreateArgs{Records: []model.Model{&clientdirectory.Client{
 			Id:           "p1",
 			DocumentType: kinds.DocumentRUT,
 			Rut:          "11111111-1",
@@ -145,7 +145,7 @@ func TestCreate_RetryIsIdempotent(t *testing.T) {
 
 	createdCount := 0
 	for _, e := range pub.published {
-		if e.Topic == crud.Topic(patientdirectory.ModelName, "patient", model.Create) {
+		if e.Topic == crud.Topic(clientdirectory.ModelName, "client", model.Create) {
 			createdCount++
 		}
 	}
@@ -161,9 +161,9 @@ func TestUpdate_DeactivateIsAnUpdatedEvent(t *testing.T) {
 	}
 	caller := crud.LoopbackActingAs(pub, "u1", mod)
 
-	var saved patientdirectory.Patient
+	var saved clientdirectory.Client
 	caller.Call(opOf(model.Create),
-		&crud.CreateArgs{Records: []model.Model{&patientdirectory.Patient{
+		&crud.CreateArgs{Records: []model.Model{&clientdirectory.Client{
 			Id:           "p1",
 			DocumentType: kinds.DocumentRUT,
 			Rut:          "11111111-1",
@@ -178,7 +178,7 @@ func TestUpdate_DeactivateIsAnUpdatedEvent(t *testing.T) {
 		&crud.UpdateArgs{
 			IDs:    []string{"p1"},
 			Fields: []string{"is_active"},
-			Record: &patientdirectory.Patient{IsActive: false},
+			Record: &clientdirectory.Client{IsActive: false},
 		}, nil, func(e error) { updateErr = e })
 	if updateErr != nil {
 		t.Fatalf("update: %v", updateErr)
@@ -186,7 +186,7 @@ func TestUpdate_DeactivateIsAnUpdatedEvent(t *testing.T) {
 
 	updCount := 0
 	for _, e := range pub.published {
-		if e.Topic == crud.Topic(patientdirectory.ModelName, "patient", model.Update) {
+		if e.Topic == crud.Topic(clientdirectory.ModelName, "client", model.Update) {
 			updCount++
 			change, ok := e.Payload.(*crud.Change)
 			if !ok || len(change.Fields) != 1 || change.Fields[0] != "is_active" {
@@ -206,9 +206,9 @@ func TestUpdate_OnlyListedFields(t *testing.T) {
 	}
 	caller := crud.LoopbackActingAs(nil, "u1", mod)
 
-	var saved patientdirectory.Patient
+	var saved clientdirectory.Client
 	caller.Call(opOf(model.Create),
-		&crud.CreateArgs{Records: []model.Model{&patientdirectory.Patient{
+		&crud.CreateArgs{Records: []model.Model{&clientdirectory.Client{
 			Id:           "p1",
 			DocumentType: kinds.DocumentRUT,
 			Rut:          "11111111-1",
@@ -221,13 +221,13 @@ func TestUpdate_OnlyListedFields(t *testing.T) {
 		&crud.UpdateArgs{
 			IDs:    []string{"p1"},
 			Fields: []string{"phone"},
-			Record: &patientdirectory.Patient{Name: "Hacked Name", Phone: "+56922222222"},
+			Record: &clientdirectory.Client{Name: "Hacked Name", Phone: "+56922222222"},
 		}, nil, func(e error) { updateErr = e })
 	if updateErr != nil {
 		t.Fatalf("update: %v", updateErr)
 	}
 
-	var list patientdirectory.PatientList
+	var list clientdirectory.ClientList
 	caller.Call(opOf(model.Read),
 		&crud.ReadArgs{ID: "p1"}, &list, func(e error) {})
 	if len(list) != 1 {
@@ -248,7 +248,7 @@ func TestUpdate_DocumentRecheckedOnlyWhenTouched(t *testing.T) {
 	}
 	caller := crud.LoopbackActingAs(nil, "u1", mod)
 
-	_, err = mod.ImportPatient(patientdirectory.Patient{
+	_, err = mod.ImportPatient(clientdirectory.Client{
 		Id:           "p1",
 		DocumentType: kinds.DocumentUnverified,
 		Rut:          "invalid-rut-123",
@@ -263,7 +263,7 @@ func TestUpdate_DocumentRecheckedOnlyWhenTouched(t *testing.T) {
 		&crud.UpdateArgs{
 			IDs:    []string{"p1"},
 			Fields: []string{"phone"},
-			Record: &patientdirectory.Patient{Phone: "+56999999999"},
+			Record: &clientdirectory.Client{Phone: "+56999999999"},
 		}, nil, func(e error) { updateErr = e })
 	if updateErr != nil {
 		t.Fatalf("expected update of phone to succeed without revalidating untransacted document: %v", updateErr)
@@ -277,7 +277,7 @@ func TestUpdate_DocumentTypeOnlyKeepsStoredRut(t *testing.T) {
 	}
 	caller := crud.LoopbackActingAs(nil, "u1", mod)
 
-	_, err = mod.ImportPatient(patientdirectory.Patient{
+	_, err = mod.ImportPatient(clientdirectory.Client{
 		Id:              "p1",
 		DocumentType:    kinds.DocumentPassport,
 		DocumentCountry: "US",
@@ -293,13 +293,13 @@ func TestUpdate_DocumentTypeOnlyKeepsStoredRut(t *testing.T) {
 		&crud.UpdateArgs{
 			IDs:    []string{"p1"},
 			Fields: []string{"document_type"},
-			Record: &patientdirectory.Patient{DocumentType: kinds.DocumentRUT},
+			Record: &clientdirectory.Client{DocumentType: kinds.DocumentRUT},
 		}, nil, func(e error) { updateErr = e })
 	if updateErr != nil {
 		t.Fatalf("update: %v", updateErr)
 	}
 
-	var list patientdirectory.PatientList
+	var list clientdirectory.ClientList
 	caller.Call(opOf(model.Read),
 		&crud.ReadArgs{ID: "p1"}, &list, func(e error) {})
 	if len(list) != 1 {
@@ -320,14 +320,14 @@ func TestSearch_ByRutPhoneName(t *testing.T) {
 	}
 	caller := crud.LoopbackActingAs(nil, "u1", mod)
 
-	patients := []patientdirectory.Patient{
+	patients := []clientdirectory.Client{
 		{Id: "p1", DocumentType: kinds.DocumentRUT, Rut: "11111111-1", Name: "Ana Morales", Phone: "+56911112222"},
 		{Id: "p2", DocumentType: kinds.DocumentRUT, Rut: "12345678-5", Name: "Bernardo Soto", Phone: "+56933334444"},
 		{Id: "p3", DocumentType: kinds.DocumentRUT, Rut: "15678432-K", Name: "Carlos Vega", Phone: "+56955556666"},
 		{Id: "p4", DocumentType: kinds.DocumentPassport, DocumentCountry: "VE", Rut: "AB1234567", Name: "Lucía Mendoza", Phone: "+584141234567"},
 	}
 	for i := range patients {
-		var s patientdirectory.Patient
+		var s clientdirectory.Client
 		caller.Call(opOf(model.Create),
 			&crud.CreateArgs{Records: []model.Model{&patients[i]}}, &s, func(e error) {
 				if e != nil {
@@ -337,7 +337,7 @@ func TestSearch_ByRutPhoneName(t *testing.T) {
 	}
 
 	// 1. Search by RUT
-	var list1 patientdirectory.PatientList
+	var list1 clientdirectory.ClientList
 	var err1 error
 	caller.Call(opOf(model.Read),
 		&crud.ReadArgs{Search: "12.345.678-5"}, &list1, func(e error) { err1 = e })
@@ -349,7 +349,7 @@ func TestSearch_ByRutPhoneName(t *testing.T) {
 	}
 
 	// 2. Search by phone digits
-	var list2 patientdirectory.PatientList
+	var list2 clientdirectory.ClientList
 	var err2 error
 	caller.Call(opOf(model.Read),
 		&crud.ReadArgs{Search: "55556666"}, &list2, func(e error) { err2 = e })
@@ -361,7 +361,7 @@ func TestSearch_ByRutPhoneName(t *testing.T) {
 	}
 
 	// 3. Search by name fragment
-	var list3 patientdirectory.PatientList
+	var list3 clientdirectory.ClientList
 	var err3 error
 	caller.Call(opOf(model.Read),
 		&crud.ReadArgs{Search: "moral"}, &list3, func(e error) { err3 = e })
@@ -373,7 +373,7 @@ func TestSearch_ByRutPhoneName(t *testing.T) {
 	}
 
 	// 4. A passport is found by its number, whatever the document type
-	var list4 patientdirectory.PatientList
+	var list4 clientdirectory.ClientList
 	var err4 error
 	caller.Call(opOf(model.Read),
 		&crud.ReadArgs{Search: "ab1234567"}, &list4, func(e error) { err4 = e })
@@ -385,7 +385,7 @@ func TestSearch_ByRutPhoneName(t *testing.T) {
 	}
 
 	// 5. Without text no patient is shown: the register starts empty
-	var list5 patientdirectory.PatientList
+	var list5 clientdirectory.ClientList
 	var err5 error
 	caller.Call(opOf(model.Read),
 		&crud.ReadArgs{Search: ""}, &list5, func(e error) { err5 = e })
@@ -404,15 +404,15 @@ func TestSearch_FoldsAccentsAndDocumentPunctuation(t *testing.T) {
 		t.Fatal(err)
 	}
 	caller := crud.LoopbackActingAs(nil, "u1", mod)
-	p := patientdirectory.Patient{Id: "p1", DocumentType: kinds.DocumentRUT, Rut: "13047980-0", Name: "Lucía Pérez", Phone: "+56912345678"}
-	var saved patientdirectory.Patient
+	p := clientdirectory.Client{Id: "p1", DocumentType: kinds.DocumentRUT, Rut: "13047980-0", Name: "Lucía Pérez", Phone: "+56912345678"}
+	var saved clientdirectory.Client
 	caller.Call(opOf(model.Create), &crud.CreateArgs{Records: []model.Model{&p}}, &saved, func(e error) {
 		if e != nil {
 			t.Fatal(e)
 		}
 	})
 	for _, typed := range []string{"lucia", "LUCÍA PEREZ", "13047980", "13.047.980-0", "56912345678"} {
-		var list patientdirectory.PatientList
+		var list clientdirectory.ClientList
 		var readErr error
 		caller.Call(opOf(model.Read), &crud.ReadArgs{Search: typed}, &list, func(e error) { readErr = e })
 		if readErr != nil {
@@ -445,7 +445,7 @@ func TestImport_Idempotent(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	p1 := patientdirectory.Patient{
+	p1 := clientdirectory.Client{
 		Id:       "imp-1",
 		Rut:      "11111111-1",
 		Name:     "First Version",
@@ -457,7 +457,7 @@ func TestImport_Idempotent(t *testing.T) {
 		t.Fatalf("import 1: %v", err)
 	}
 
-	p2 := patientdirectory.Patient{
+	p2 := clientdirectory.Client{
 		Id:       "imp-1",
 		Rut:      "11111111-1",
 		Name:     "Second Version",
@@ -494,16 +494,16 @@ func TestCreate_PublishesChange(t *testing.T) {
 		t.Fatal(err)
 	}
 	caller := crud.LoopbackActingAs(pub, "u1", mod)
-	var saved patientdirectory.Patient
+	var saved clientdirectory.Client
 	var createErr error
 	caller.Call(opOf(model.Create),
-		&crud.CreateArgs{Records: []model.Model{&patientdirectory.Patient{
+		&crud.CreateArgs{Records: []model.Model{&clientdirectory.Client{
 			Id: "p1", DocumentType: kinds.DocumentRUT, Rut: "11111111-1", Name: "Patient 1",
 		}}}, &saved, func(e error) { createErr = e })
 	if createErr != nil {
 		t.Fatalf("create: %v", createErr)
 	}
-	if len(pub.published) != 1 || pub.published[0].Topic != crud.Topic(patientdirectory.ModelName, "patient", model.Create) {
+	if len(pub.published) != 1 || pub.published[0].Topic != crud.Topic(clientdirectory.ModelName, "client", model.Create) {
 		t.Fatalf("expected one created event, got %+v", pub.published)
 	}
 	if _, ok := pub.published[0].Payload.(*crud.Change); !ok {
@@ -517,14 +517,14 @@ type noAnswerModule struct{ store crud.Store }
 func (noAnswerModule) ModelName() string { return "no_answer" }
 func (m noAnswerModule) Definition() model.ModuleDefinition {
 	return model.ModuleDefinition{Name: m.ModelName(), Entities: []model.Definition{{
-		Name: "patient", Allow: patientdirectory.PatientModel.Allow, Rules: patientdirectory.PatientModel.Rules}}}
+		Name: "client", Allow: clientdirectory.ClientModel.Allow, Rules: clientdirectory.ClientModel.Rules}}}
 }
 func (m noAnswerModule) MountOperations(reg crud.Registry) {
 	reg.AddStoredEntity(crud.StoredEntity{
-		Model:   &patientdirectory.Patient{},
-		NewList: func() model.ModelSlice { return &patientdirectory.PatientList{} },
+		Model:   &clientdirectory.Client{},
+		NewList: func() model.ModelSlice { return &clientdirectory.ClientList{} },
 		Store:   m.store,
-		Rules:   patientdirectory.PatientModel.Rules,
+		Rules:   clientdirectory.ClientModel.Rules,
 		Create: func(a crud.CurrentUser, tx crud.Tx, rec model.Model) (crud.RuleAnswer, error) {
 			return crud.RuleAnswer{}, nil
 		},
@@ -539,11 +539,11 @@ func TestRule_NoAnswerIsRefused(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	bad := noAnswerModule{store: mod.StorePatient()}
+	bad := noAnswerModule{store: mod.StoreClient()}
 	caller := crud.LoopbackActingAs(nil, "u1", bad)
 	var createErr error
-	caller.Call(router.Operation{Module: "no_answer", Entity: "patient", Action: model.Create},
-		&crud.CreateArgs{Records: []model.Model{&patientdirectory.Patient{
+	caller.Call(router.Operation{Module: "no_answer", Entity: "client", Action: model.Create},
+		&crud.CreateArgs{Records: []model.Model{&clientdirectory.Client{
 			Id: "p9", DocumentType: kinds.DocumentRUT, Rut: "22222222-2", Name: "Patient 9",
 		}}}, nil, func(e error) { createErr = e })
 	if createErr == nil {

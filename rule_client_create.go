@@ -1,7 +1,7 @@
-package patientdirectory
+package clientdirectory
 
 import (
-	"github.com/veltylabs/patient_directory/kinds"
+	"github.com/veltylabs/client_directory/kinds"
 	"webtyp.com/crud"
 	"webtyp.com/model"
 	"webtyp.com/storage"
@@ -9,7 +9,7 @@ import (
 
 // Create es la regla de negocio de crear patient: normaliza y valida el documento y rechaza un documento ya registrado en esta clínica.
 // crud ya validó el esquema, los campos solo del servidor, los límites y el permiso antes de llamarte.
-func (p *Patient) Create(a crud.CurrentUser, tx crud.Tx, m *Module) (crud.RuleAnswer, error) {
+func (p *Client) Create(a crud.CurrentUser, tx crud.Tx, m *Module) (crud.RuleAnswer, error) {
 	if err := m.checkDocument(p); err != nil {
 		return crud.RuleAnswer{}, err
 	}
@@ -23,15 +23,15 @@ func (p *Patient) Create(a crud.CurrentUser, tx crud.Tx, m *Module) (crud.RuleAn
 }
 
 // sameDocument rechaza otro paciente de esta clínica con el mismo documento (el tenant lo pone el Store).
-func (m *Module) sameDocument(tx crud.Tx, p *Patient) error {
+func (m *Module) sameDocument(tx crud.Tx, p *Client) error {
 	if p.Rut == "" || p.DocumentType == kinds.DocumentUnverified {
 		return nil
 	}
 	var taken bool
-	err := tx.ReadAll(func() model.Model { return &Patient{} }, crud.Query{Conditions: []storage.Condition{
-		storage.Eq(Patient_.DocumentType, p.DocumentType), storage.Eq(Patient_.Rut, p.Rut),
+	err := tx.ReadAll(func() model.Model { return &Client{} }, crud.Query{Conditions: []storage.Condition{
+		storage.Eq(Client_.DocumentType, p.DocumentType), storage.Eq(Client_.Rut, p.Rut),
 	}}, func(r model.Model) {
-		other := r.(*Patient)
+		other := r.(*Client)
 		if other.Id != p.Id && other.DocumentCountry == p.DocumentCountry {
 			taken = true
 		}
@@ -40,7 +40,7 @@ func (m *Module) sameDocument(tx crud.Tx, p *Patient) error {
 		return err
 	}
 	if taken {
-		return &model.FieldError{Field: Patient_.Rut, Err: ErrRutAlreadyExists}
+		return &model.FieldError{Field: Client_.Rut, Err: ErrRutAlreadyExists}
 	}
 	return nil
 }

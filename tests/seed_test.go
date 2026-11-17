@@ -3,8 +3,8 @@ package tests
 import (
 	"testing"
 
-	patientdirectory "github.com/veltylabs/patient_directory"
-	"github.com/veltylabs/patient_directory/seed"
+	clientdirectory "github.com/veltylabs/client_directory"
+	"github.com/veltylabs/client_directory/seed"
 	"webtyp.com/crud"
 	"webtyp.com/events/inprocess"
 	"webtyp.com/input"
@@ -15,7 +15,7 @@ import (
 
 func TestSeed_Load(t *testing.T) {
 	db := orm.New(mem.New())
-	mod, err := patientdirectory.New(db, patientdirectory.Deps{
+	mod, err := clientdirectory.New(db, clientdirectory.Deps{
 		Countries:   testCountries,
 		Publisher:   &inprocess.Broker{},
 		TenantID:    "demo",
@@ -23,7 +23,7 @@ func TestSeed_Load(t *testing.T) {
 		ValidateRUT: input.NormalizeRUT,
 	})
 	if err != nil {
-		t.Fatalf("patientdirectory.New: %v", err)
+		t.Fatalf("clientdirectory.New: %v", err)
 	}
 
 	data, err := seed.Load(mod, "demo")
@@ -57,7 +57,7 @@ func TestSeed_Load(t *testing.T) {
 // pasaporte o una cédula extranjera no caen en la búsqueda por nombre.
 func TestSeed_ForeignPatientsFoundByDocument(t *testing.T) {
 	db := orm.New(mem.New())
-	mod, err := patientdirectory.New(db, patientdirectory.Deps{
+	mod, err := clientdirectory.New(db, clientdirectory.Deps{
 		Countries:   testCountries,
 		Publisher:   &inprocess.Broker{},
 		TenantID:    "demo",
@@ -65,7 +65,7 @@ func TestSeed_ForeignPatientsFoundByDocument(t *testing.T) {
 		ValidateRUT: input.NormalizeRUT,
 	})
 	if err != nil {
-		t.Fatalf("patientdirectory.New: %v", err)
+		t.Fatalf("clientdirectory.New: %v", err)
 	}
 	if _, err := seed.Load(mod, "demo"); err != nil {
 		t.Fatalf("seed.Load: %v", err)
@@ -77,7 +77,7 @@ func TestSeed_ForeignPatientsFoundByDocument(t *testing.T) {
 		{"CE-004567", "demo-patient-5"},
 		{"HT2024567", "demo-patient-6"},
 	} {
-		var list patientdirectory.PatientList
+		var list clientdirectory.ClientList
 		var callErr error
 		caller.Call(opOf(model.Read),
 			&crud.ReadArgs{Search: tc.document}, &list, func(e error) { callErr = e })
