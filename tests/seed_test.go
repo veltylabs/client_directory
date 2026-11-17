@@ -6,7 +6,7 @@ import (
 	patientdirectory "github.com/veltylabs/patient_directory"
 	"github.com/veltylabs/patient_directory/seed"
 	"webtyp.com/crud"
-	"webtyp.com/events/mock"
+	"webtyp.com/events/inprocess"
 	"webtyp.com/input"
 	"webtyp.com/model"
 	"webtyp.com/orm"
@@ -17,7 +17,7 @@ func TestSeed_Load(t *testing.T) {
 	db := orm.New(mem.New())
 	mod, err := patientdirectory.New(db, patientdirectory.Deps{
 		Countries:   testCountries,
-		Publisher:   &mock.Broker{},
+		Publisher:   &inprocess.Broker{},
 		TenantID:    "demo",
 		IDs:         &testIDGen{},
 		ValidateRUT: input.NormalizeRUT,
@@ -59,7 +59,7 @@ func TestSeed_ForeignPatientsFoundByDocument(t *testing.T) {
 	db := orm.New(mem.New())
 	mod, err := patientdirectory.New(db, patientdirectory.Deps{
 		Countries:   testCountries,
-		Publisher:   &mock.Broker{},
+		Publisher:   &inprocess.Broker{},
 		TenantID:    "demo",
 		IDs:         &testIDGen{},
 		ValidateRUT: input.NormalizeRUT,

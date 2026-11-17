@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	patientdirectory "github.com/veltylabs/patient_directory"
-	"webtyp.com/events/mock"
+	"webtyp.com/events/inprocess"
 	"webtyp.com/input"
 	"webtyp.com/model"
 	"webtyp.com/orm"
@@ -17,7 +17,7 @@ import (
 func TestFindPatient_AnyWayTheRutIsWritten(t *testing.T) {
 	m, err := patientdirectory.New(orm.New(mem.New()), patientdirectory.Deps{
 		Countries:   testCountries,
-		Publisher:   &mock.Broker{},
+		Publisher:   &inprocess.Broker{},
 		TenantID:    "t1",
 		IDs:         &testIDGen{},
 		ValidateRUT: input.NormalizeRUT,

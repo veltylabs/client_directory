@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/veltylabs/patient_directory/kinds"
+	"webtyp.com/country"
 	"webtyp.com/crud"
 	"webtyp.com/model"
 	"webtyp.com/orm"
@@ -67,5 +68,15 @@ func TestPhone_InternationalThroughCrudDefaultCountryThroughImport(t *testing.T)
 	got, err := mod.ImportPatient(patientdirectory.Patient{Id: "p3", DocumentType: kinds.DocumentRUT, Rut: "11111111-1", Name: "Juan", Phone: "9 1111 1111"})
 	if err != nil || got.Phone != "+56911111111" {
 		t.Fatalf("import phone = %q, %v; want +56911111111 (default country CL)", got.Phone, err)
+	}
+}
+
+// A new record starts with the RUT in the country that has one and with a passport anywhere else.
+func TestInitialDocument_FollowsTheDefaultCountry(t *testing.T) {
+	if got := kinds.InitialDocument(country.Catalog{Default: "CL"}); got != kinds.DocumentRUT {
+		t.Errorf("CL: got %q, want %q", got, kinds.DocumentRUT)
+	}
+	if got := kinds.InitialDocument(country.Catalog{Default: "AR"}); got != kinds.DocumentPassport {
+		t.Errorf("AR: got %q, want %q", got, kinds.DocumentPassport)
 	}
 }

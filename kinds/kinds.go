@@ -1,6 +1,7 @@
 package kinds
 
 import (
+	"webtyp.com/country"
 	"webtyp.com/fmt"
 	"webtyp.com/input"
 )
@@ -12,6 +13,19 @@ const (
 	DocumentNone       = "none"       // the person has no document at hand
 	DocumentUnverified = "unverified" // typed but invalid; the front desk must fix it
 )
+
+// RUTCountry is the country whose people have a RUT: an installation whose default country is this one starts a new
+// record with a RUT; any other starts with a passport.
+const RUTCountry = "CL"
+
+// InitialDocument is the document type a new record starts with: the RUT when the installation's default country is
+// RUTCountry, the passport otherwise. Example: p := &Patient{DocumentType: kinds.InitialDocument(countries)}
+func InitialDocument(countries country.Catalog) string {
+	if countries.Default == RUTCountry {
+		return DocumentRUT
+	}
+	return DocumentPassport
+}
 
 // rutName is the national id name, the same in every language: data, not UI text.
 const rutName = "RUT"

@@ -49,7 +49,7 @@ func Demo() (view.Demo, error) {
 			{Name: patientdirectory.ModelName, Run: migrate.Migrate},
 		},
 		Screens: func(d view.BrowserDeps) []view.Screen {
-			return ui.Screens(d.Caller, d.Countries)
+			return ui.Screens(d)
 		},
 	}, nil
 }

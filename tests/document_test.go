@@ -227,7 +227,7 @@ func TestPassportNumberWithRUTTypeFailsOnNumber(t *testing.T) {
 		t.Fatalf("setup: %v", err)
 	}
 	caller := view.NewRecords().Caller(crud.LoopbackActingAs(nil, "user1", m))
-	saver := ui.Screens(caller, testCountries)[0].Presenter.(view.Saver)
+	saver := ui.Screens(view.BrowserDeps{Caller: caller, Countries: testCountries})[0].Presenter.(view.Saver)
 
 	var saveErr error
 	saver.Save([]model.Model{&patientdirectory.Patient{
