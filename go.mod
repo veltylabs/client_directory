@@ -6,7 +6,7 @@ require (
 	webtyp.com/components v0.8.75
 	webtyp.com/country v0.0.2
 	webtyp.com/crud v0.0.18
-	webtyp.com/ddl v0.0.57
+	webtyp.com/ddl v0.0.59
 	webtyp.com/events v0.1.15
 	webtyp.com/fmt v1.0.3
 	webtyp.com/input v0.2.5
