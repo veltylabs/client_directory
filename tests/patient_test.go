@@ -283,3 +283,22 @@ func TestItemsDeclaredOnFields(t *testing.T) {
 		t.Errorf("expected Badge to be empty, got %q", item.Badge)
 	}
 }
+
+// PatientBirthdate entrega la fecha de nacimiento para que la agenda del doctor muestre la edad.
+func TestPatientBirthdate(t *testing.T) {
+	m, _, err := setupModuleWithTenant("tenant-1")
+	if err != nil {
+		t.Fatalf("setup falló: %v", err)
+	}
+	p := clientdirectory.Client{Id: "id-9", TenantId: "tenant-1", Rut: "12345678-K", Name: "Wilma", Birthdate: "1960-03-15", IsActive: true}
+	if _, err := m.ImportPatient(p); err != nil {
+		t.Fatal(err)
+	}
+	birth, found, err := m.PatientBirthdate("tenant-1", "id-9")
+	if err != nil || !found || birth != "1960-03-15" {
+		t.Fatalf("PatientBirthdate = %q, %v, %v", birth, found, err)
+	}
+	if _, found, _ := m.PatientBirthdate("tenant-2", "id-9"); found {
+		t.Error("otro tenant no debe encontrar al paciente")
+	}
+}

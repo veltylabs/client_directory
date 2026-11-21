@@ -25,6 +25,24 @@ func (m *Module) GetPatient(tenantID, id string) (name, documentNumber, phone, e
 	return p.Name, p.Rut, p.Phone, p.Email, true, nil
 }
 
+// PatientBirthdate lee la fecha de nacimiento de un paciente ("YYYY-MM-DD", "" si no la tiene): con ella el
+// consumidor muestra la edad. Ausente u otro tenant ⇒ found=false, err=nil.
+// Ejemplo: birth, ok, err := m.PatientBirthdate("t1", "p1")
+func (m *Module) PatientBirthdate(tenantID, id string) (birthdate string, found bool, err error) {
+	if tenantID == "" || id == "" || tenantID != m.tenantID {
+		return "", false, nil
+	}
+	var p Client
+	err = m.store.ReadOne(&p, id)
+	if model.KindOf(err) == model.ErrorNotFound {
+		return "", false, nil
+	}
+	if err != nil {
+		return "", false, err
+	}
+	return p.Birthdate, true, nil
+}
+
 // FindPatient busca un paciente por su número de documento (RUT). Ausente ⇒ found=false, err=nil.
 // Ejemplo: id, name, phone, email, ok, err := m.FindPatient("t1", "12.345.678-5")
 func (m *Module) FindPatient(tenantID, documentNumber string) (id, name, phone, email string, found bool, err error) {
