@@ -18,7 +18,7 @@ require (
 	webtyp.com/svg v0.3.43
 	webtyp.com/time v0.6.7
 	webtyp.com/unixid v0.3.1
-	webtyp.com/view v0.6.88
+	webtyp.com/view v0.6.95
 )
 
 require webtyp.com/securityevent v0.0.2 // indirect
